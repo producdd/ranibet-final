@@ -4,67 +4,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RANI BET 🐸 - Liga 1</title>
+    <title>RANI BET 🐸 | La Casa de la Liga 1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Barlow+Condensed:wght@400;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;800&family=Orbitron:wght@700&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --o-green: #28a745;
+            --o-bg: #f4f7f6;
+            --o-text: #1a1a1a;
+        }
+
         body {
-            background-color: #020617;
-            color: #f8fafc;
-            font-family: 'Barlow Condensed', sans-serif;
+            background-color: var(--o-bg);
+            color: var(--o-text);
+            font-family: 'Barlow', sans-serif;
         }
 
         .font-orb {
             font-family: 'Orbitron', sans-serif;
         }
+
+        .bet-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-green {
+            background-color: var(--o-green);
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        .odds-button {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .odds-button:hover {
+            border-color: var(--o-green);
+            background: #e6f4ea;
+        }
     </style>
 </head>
 
-<body class="min-h-screen pb-20">
-    <nav class="border-b border-gray-800 bg-black/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl">🐸</span>
-                <span class="font-orb text-xl font-bold text-green-500 tracking-tighter">RANI BET</span>
+<body class="min-h-screen pb-10">
+    <nav class="bg-white border-b-4 border-green-600 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🐸</span>
+                <span class="font-orb text-2xl font-bold tracking-tighter text-gray-900">RANI<span
+                        class="text-green-600">BET</span></span>
             </div>
+
             <div id="user-info" class="hidden flex items-center gap-4">
-                <div class="bg-gray-900 border border-green-500/30 px-3 py-1 rounded-full flex items-center gap-2">
-                    <span id="balance-val" class="font-orb text-green-400 font-bold">0.00</span>
-                    <span class="text-[10px] text-green-600">RC</span>
+                <div class="text-right">
+                    <p id="user-name" class="text-[10px] font-bold text-gray-400 uppercase">Usuario</p>
+                    <div class="flex items-center gap-1">
+                        <span id="balance-val" class="text-xl font-extrabold text-green-600">0.00</span>
+                        <span class="text-xs font-bold text-gray-400">RC</span>
+                    </div>
                 </div>
-                <img id="user-photo" src="" class="w-8 h-8 rounded-full border border-gray-700">
+                <img id="user-photo" src="" class="w-10 h-10 rounded-full border-2 border-green-500 shadow-sm">
             </div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-4 mt-8">
+    <div class="max-w-7xl mx-auto px-4 mt-6">
         <div
-            class="bg-gradient-to-r from-green-900/20 to-black border border-green-500/20 rounded-xl p-6 mb-8 text-center">
-            <h2 class="font-orb text-lg mb-4">CANJEAR CÓDIGO DE STREAM</h2>
-            <div class="flex max-w-sm mx-auto gap-2">
-                <input id="code-input" type="text" placeholder="RANA50"
-                    class="flex-1 bg-black border border-gray-700 rounded-lg px-4 py-2 uppercase font-orb outline-none focus:border-green-500">
-                <button onclick="canjearCodigo()"
-                    class="bg-green-500 text-black font-bold px-4 py-2 rounded-lg hover:bg-green-400 transition">CANJEAR</button>
+            class="bg-green-600 rounded-xl p-6 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
+            <div class="z-10">
+                <h1 class="text-3xl font-extrabold italic">¡TU PRIMER DEPÓSITO VALE DOBLE!</h1>
+                <p class="text-green-100 mt-1">Usa el código <span
+                        class="bg-white text-green-700 px-2 py-0.5 rounded font-bold">RANA50</span></p>
             </div>
+            <div class="text-8xl opacity-10 font-bold italic z-0">LIGA 1</div>
         </div>
-        <div id="fixture-container" class="grid gap-4 md:grid-cols-2"></div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <aside class="space-y-6">
+            <div>
+                <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                    <span class="w-1 h-4 bg-green-600"></span> COMPETENCIAS
+                </h3>
+                <div class="bet-card overflow-hidden">
+                    <div
+                        class="p-3 hover:bg-green-50 flex items-center justify-between border-b border-gray-100 cursor-pointer bg-green-50 border-l-4 border-green-600">
+                        <span class="font-bold text-sm">🇵🇪 Liga 1 Perú</span>
+                        <span class="text-[10px] text-green-600">★</span>
+                    </div>
+                    <div
+                        class="p-3 hover:bg-gray-50 flex items-center justify-between border-b border-gray-100 cursor-pointer">
+                        <span class="text-sm">🇪🇸 La Liga</span>
+                    </div>
+                    <div class="p-3 hover:bg-gray-50 flex items-center justify-between cursor-pointer">
+                        <span class="text-sm">🇬🇧 Premier League</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bet-card p-5 border-t-4 border-yellow-500">
+                <p class="text-xs font-bold text-gray-400 mb-2 uppercase text-center">Canjear Bono</p>
+                <input id="code-input" type="text" placeholder="EJ: RANA50"
+                    class="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 mb-3 text-center font-bold outline-none focus:border-green-500 transition">
+                <button onclick="canjearCodigo()"
+                    class="w-full btn-green font-bold py-2.5 rounded-lg text-sm shadow-md">RECLAMAR RANI COINS</button>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-3">
+            <div class="flex items-center gap-2 mb-6">
+                <span class="text-2xl text-green-600">⚽</span>
+                <h2 class="text-xl font-extrabold text-gray-800">PARTIDOS DESTACADOS</h2>
+            </div>
+
+            <div id="fixture-container" class="space-y-4">
+            </div>
+        </section>
     </main>
 
-    <div id="login-modal" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4">
-        <div class="bg-gray-900 border border-green-500/50 p-8 rounded-2xl max-w-sm w-full text-center">
-            <div class="text-5xl mb-4">🐸</div>
-            <h2 class="font-orb text-2xl mb-2 text-green-500">ACCESO SEGURO</h2>
-            <p class="text-gray-400 text-sm mb-6">Inicia sesión para proteger tus Rani Coins.</p>
+    <div id="login-modal"
+        class="fixed inset-0 bg-gray-900/80 flex items-center justify-center z-[100] p-4 backdrop-blur-md">
+        <div class="bg-white p-10 rounded-2xl max-w-sm w-full text-center shadow-2xl">
+            <div class="text-6xl mb-4">🐸</div>
+            <div class="font-orb text-3xl mb-2 tracking-tighter">RANI<span class="text-green-600">BET</span></div>
+            <p class="text-gray-500 text-sm mb-8 font-medium">Inicia sesión para empezar a ganar.</p>
 
             <div id="g_id_onload"
                 data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com"
                 data-callback="handleCredentialResponse" data-auto_prompt="false">
             </div>
-            <div class="g_id_signin flex justify-center" data-type="standard"></div>
+            <div class="g_id_signin flex justify-center" data-type="standard" data-theme="outline" data-size="large"
+                data-shape="pill"></div>
         </div>
     </div>
 
