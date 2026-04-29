@@ -78,77 +78,37 @@
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-4 mt-6">
-        <div
-            class="bg-green-600 rounded-xl p-6 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
-            <div class="z-10">
-                <h1 class="text-3xl font-extrabold italic">¡TU PRIMER DEPÓSITO VALE DOBLE!</h1>
-                <p class="text-green-100 mt-1">Usa el código <span
-                        class="bg-white text-green-700 px-2 py-0.5 rounded font-bold">RANA50</span></p>
+    <nav class="bg-white border-b-4 border-green-600 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🐸</span>
+                <span class="font-orb text-2xl font-bold tracking-tighter text-gray-900">RANI<span
+                        class="text-green-600">BET</span></span>
             </div>
-            <div class="text-8xl opacity-10 font-bold italic z-0">LIGA 1</div>
-        </div>
-    </div>
 
-    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside class="space-y-6">
-            <div>
-                <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                    <span class="w-1 h-4 bg-green-600"></span> COMPETENCIAS
-                </h3>
-                <div class="bet-card overflow-hidden">
-                    <div
-                        class="p-3 hover:bg-green-50 flex items-center justify-between border-b border-gray-100 cursor-pointer bg-green-50 border-l-4 border-green-600">
-                        <span class="font-bold text-sm">🇵🇪 Liga 1 Perú</span>
-                        <span class="text-[10px] text-green-600">★</span>
+            <div id="auth-container">
+                <div id="user-info" class="hidden flex items-center gap-4">
+                    <div class="text-right">
+                        <p id="user-name" class="text-[10px] font-bold text-gray-400 uppercase">Usuario</p>
+                        <div class="flex items-center gap-1">
+                            <span id="balance-val" class="text-xl font-extrabold text-green-600">0.00</span>
+                            <span class="text-xs font-bold text-gray-400">RC</span>
+                        </div>
                     </div>
-                    <div
-                        class="p-3 hover:bg-gray-50 flex items-center justify-between border-b border-gray-100 cursor-pointer">
-                        <span class="text-sm">🇪🇸 La Liga</span>
+                    <img id="user-photo" src="" class="w-10 h-10 rounded-full border-2 border-green-500 shadow-sm">
+                </div>
+
+                <div id="google-login-btn">
+                    <div id="g_id_onload"
+                        data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com"
+                        data-callback="handleCredentialResponse" data-auto_prompt="false">
                     </div>
-                    <div class="p-3 hover:bg-gray-50 flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">🇬🇧 Premier League</span>
-                    </div>
+                    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline"
+                        data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
                 </div>
             </div>
-
-            <div class="bet-card p-5 border-t-4 border-yellow-500">
-                <p class="text-xs font-bold text-gray-400 mb-2 uppercase text-center">Canjear Bono</p>
-                <input id="code-input" type="text" placeholder="EJ: RANA50"
-                    class="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 mb-3 text-center font-bold outline-none focus:border-green-500 transition">
-                <button onclick="canjearCodigo()"
-                    class="w-full btn-green font-bold py-2.5 rounded-lg text-sm shadow-md">RECLAMAR RANI COINS</button>
-            </div>
-        </aside>
-
-        <section class="lg:col-span-3">
-            <div class="flex items-center gap-2 mb-6">
-                <span class="text-2xl text-green-600">⚽</span>
-                <h2 class="text-xl font-extrabold text-gray-800">PARTIDOS DESTACADOS</h2>
-            </div>
-
-            <div id="fixture-container" class="space-y-4">
-            </div>
-        </section>
-    </main>
-
-    <div id="login-modal"
-        class="fixed inset-0 bg-gray-900/80 flex items-center justify-center z-[100] p-4 backdrop-blur-md">
-        <div class="bg-white p-10 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-            <div class="text-6xl mb-4">🐸</div>
-            <div class="font-orb text-3xl mb-2 tracking-tighter">RANI<span class="text-green-600">BET</span></div>
-            <p class="text-gray-500 text-sm mb-8 font-medium">Inicia sesión para empezar a ganar.</p>
-
-            <div id="g_id_onload"
-                data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com"
-                data-callback="handleCredentialResponse" data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin flex justify-center" data-type="standard" data-theme="outline" data-size="large"
-                data-shape="pill"></div>
         </div>
-    </div>
-
-    <script src="main.js"></script>
+    </nav>
 </body>
 
 </html>
