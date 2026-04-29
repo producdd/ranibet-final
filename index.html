@@ -245,3 +245,45 @@ async function iniciarApp() {
 window.onload = iniciarApp;
 </script>
 </body></html>
+<div id="pantalla-principal" style="background:#0a0a0a; color:white; min-height:100vh; font-family:sans-serif; padding:20px;">
+    <h1 style="text-align:center; color:#00ff00;">🐸 RANI BET FIXTURE</h1>
+    <div id="contenedor-partidos" style="display:grid; gap:15px; max-width:600px; margin:auto;">
+        <p style="text-align:center;">Cargando partidos de hoy...</p>
+    </div>
+</div>
+
+<script>
+async function iniciarApp() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
+    const container = document.getElementById("contenedor-partidos");
+    
+    try {
+        const res = await fetch(url);
+        const csv = await res.text();
+        const filas = csv.split("\n").slice(2);
+        
+        container.innerHTML = filas.map(f => {
+            const c = f.split(",");
+            if (c.length < 7) return "";
+            const enVivo = c[6].toUpperCase().includes("VIVO");
+            return `
+                <div style="background:#1a1a1a; padding:15px; border-radius:10px; border:1px solid ${enVivo ? 'red' : '#333'};">
+                    <div style="font-size:10px; color:#aaa;">${c[4]}</div>
+                    <div style="font-size:18px; margin:10px 0;"><b>${c[0]}</b></div>
+                    <div style="display:flex; gap:5px; justify-content:center;">
+                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">L: ${c[1]}</button>
+                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">E: ${c[2]}</button>
+                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">V: ${c[3]}</button>
+                    </div>
+                    <div style="margin-top:10px; text-align:right; font-weight:bold; color:${enVivo ? 'red' : '#00ff00'};">
+                        ${enVivo ? '🔴 EN VIVO' : c[5]}
+                    </div>
+                </div>`;
+        }).join("");
+    } catch (e) {
+        container.innerHTML = "Error al conectar con Google Sheets.";
+    }
+}
+window.onload = iniciarApp;
+</script>
+</body></html>
