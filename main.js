@@ -1,3 +1,4 @@
+const urlCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
 const PARTIDOS = [
     { id: 101, liga: "LIGA 1 PERÚ", local: "ADT", visita: "Sport Huancayo", cL: 1.80, cX: 3.10, cV: 4.50, marcador: "2 - 1", tiempo: "65'", enVivo: true },
     { id: 1, liga: "LIGA 1 PERÚ", local: "Universitario", visita: "Alianza Lima", cL: 2.15, cX: 3.25, cV: 3.40, hora: "Hoy 20:00", enVivo: false },
