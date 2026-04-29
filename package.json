@@ -1,9 +1,5 @@
 {
-    "name": "ranibet-v2",
-    "version": "2.0.0",
-    "scripts": {
-        "start": "vite",
-        "build": "vite build",
-        "preview": "vite preview"
-    }
+    "name": "ranibet",
+    "version": "1.0.0",
+    "private": true
 }
