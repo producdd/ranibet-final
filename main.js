@@ -8,9 +8,22 @@ const PARTIDOS = [
 let user = JSON.parse(localStorage.getItem('rani_user')) || null;
 let seleccionActual = null;
 
+async function cargarDesdeExcel() { 
+    try { 
+        const res = await fetch(urlCSV); 
+        const csv = await res.text(); 
+        const filas = csv.split("\n").slice(2); 
+        PARTIDOS = filas.map((f, i) => { 
+            const c = f.split(","); 
+            if (c.length < 7) return null; 
+            return { id: i, local: c[0].split(" vs ")[0], visita: c[0].split(" vs ")[1], cL: c[1], cX: c[2], cV: c[3], liga: c[4], hora: c[5], estado: c[6] }; 
+        }).filter(p => p !== null); 
+        cargarDesdeExcel(); 
+    } catch (e) { console.error(e); } 
+}
 document.addEventListener('DOMContentLoaded', () => {
     if (user) mostrarApp();
-    renderizarTodo();
+    cargarDesdeExcel();
 
     // Escuchar cambios en el monto para calcular ganancia
     document.getElementById('bet-amount')?.addEventListener('input', calcularGanancia);
