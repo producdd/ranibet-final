@@ -1,1 +1,1 @@
-console.log('Cargando sistema de partidos...');
+console.log('RaniBet Cargando...');
