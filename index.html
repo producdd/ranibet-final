@@ -3,159 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaniBet Pro | Casa de Apuestas</title>
+    <title>RaniBet Elite | Casa de Apuestas Completa</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        :root { --rani-green: #28a745; --dark: #1a1a1a; --gray: #f4f7f6; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--gray); margin: 0; color: #333; }
+        :root { --rani-green: #28a745; --dark: #121212; --surface: #ffffff; --border: #e0e0e0; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; margin: 0; color: #333; }
+
+        /* Navegación y Header */
+        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .logo { font-size: 24px; font-weight: 900; color: var(--dark); }
+        .user-panel { display: flex; align-items: center; gap: 12px; }
+        .balance-badge { background: #e8f5e9; color: var(--rani-green); padding: 8px 16px; border-radius: 20px; font-weight: 800; border: 1px solid #c8e6c9; }
+
+        /* Layout */
+        .app-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 15px; }
+        @media (min-width: 1024px) { .app-container { grid-template-columns: 240px 1fr 340px; } }
+
+        /* Filtros Rápidos */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-chip { background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; border: 1px solid var(--border); }
+        .filter-chip.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+        /* Card de Partido Profesional */
+        .card { background: white; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; }
+        .card-header { padding: 10px 15px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #777; }
+        .card-body { padding: 20px; text-align: center; }
+        .teams-row { font-size: 16px; font-weight: 700; margin-bottom: 15px; }
         
-        /* Header Profesional */
-        header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { font-size: 22px; font-weight: 900; letter-spacing: -1px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .balance-pill { background: #e8f5e9; color: var(--rani-green); padding: 6px 15px; border-radius: 50px; font-weight: bold; font-size: 14px; border: 1px solid #c8e6c9; }
+        .odds-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .odd-btn { background: #f8f9fa; border: 1px solid var(--border); padding: 12px 5px; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; }
+        .odd-btn:hover { border-color: var(--rani-green); background: #f1f8f1; }
+        .odd-btn.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
+        .odd-label { display: block; font-size: 10px; opacity: 0.8; margin-bottom: 2px; }
+        .odd-value { font-weight: 800; font-size: 15px; }
 
-        /* Contenedor Principal */
-        .container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1300px; margin: 15px auto; padding: 0 15px; }
-        @media (min-width: 1024px) { .container { grid-template-columns: 250px 1fr 320px; } }
+        /* Boleta Combinada */
+        .slip-card { background: white; border-radius: 12px; position: sticky; top: 90px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .slip-title { background: var(--dark); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
+        .selection-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; position: relative; }
+        .remove-sel { position: absolute; right: 10px; top: 10px; color: #ff4444; cursor: pointer; font-weight: bold; }
+        
+        .slip-footer { padding: 15px; background: #fcfcfc; }
+        .total-odds { display: flex; justify-content: space-between; font-weight: 800; font-size: 18px; margin-bottom: 15px; color: var(--rani-green); }
+        .bet-btn { width: 100%; padding: 16px; background: var(--rani-green); color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #1e7e34; }
+        .bet-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e7e34; }
 
-        /* Filtros Lateral */
-        .sidebar { display: none; }
-        @media (min-width: 1024px) { .sidebar { display: block; } }
-        .nav-item { padding: 12px; background: white; margin-bottom: 5px; border-radius: 8px; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
-        .nav-item:hover { background: #eee; border-left-color: var(--rani-green); }
-
-        /* Tarjetas de Partido Mejoradas */
-        .match-card { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .match-info { padding: 12px; background: #f8f9fa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 12px; color: #666; }
-        .match-teams { padding: 15px; font-weight: bold; font-size: 16px; text-align: center; }
-        .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; }
-        .odd-box { background: #f1f3f5; border: 1px solid #dee2e6; padding: 10px 5px; border-radius: 6px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .odd-box:hover { border-color: var(--rani-green); background: #e8f5e9; }
-        .odd-box.active { background: var(--rani-green); color: white; border-color: var(--rani-green); }
-        .odd-val { display: block; font-weight: bold; font-size: 14px; margin-top: 2px; }
-
-        /* Boleta de Apuestas */
-        .bet-slip { background: white; border-radius: 12px; position: sticky; top: 80px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .slip-header { background: var(--dark); color: white; padding: 12px; border-radius: 12px 12px 0 0; text-align: center; font-weight: bold; }
-        .slip-content { padding: 15px; min-height: 100px; }
-        .bet-input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 18px; font-weight: bold; text-align: center; margin-top: 10px; }
-
-        /* Historial y Estados */
-        .status-badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: bold; }
-        .status-open { background: #fff3cd; color: #856404; }
-        .status-won { background: #d4edda; color: #155724; }
+        /* Bono */
+        .promo-box { background: linear-gradient(45deg, #212529, #343a40); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">🐸 RANI<span style="color:var(--rani-green)">BET</span></div>
-    <div class="user-info">
-        <div id="logged-in-ui" style="display:none; align-items:center; gap:10px;">
-            <div class="balance-pill"><span id="balance-val">0</span> RC</div>
-            <img id="user-photo" src="" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--rani-green);">
-            <button onclick="logout()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size:12px;">Salir</button>
+    <div class="user-panel">
+        <div id="auth-ui">
+            <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="onAuth"></div>
+            <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
         </div>
-        <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="handleAuth"></div>
-        <div class="g_id_signin" data-type="standard"></div>
+        <div id="user-ui" style="display:none; align-items:center; gap:12px;">
+            <div class="balance-badge">RC <span id="balance-txt">0</span></div>
+            <img id="user-img" src="" style="width:36px; height:36px; border-radius:50%;">
+            <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer;">✖</button>
+        </div>
     </div>
 </header>
 
-<div class="container">
-    <!-- Lateral: Ligas -->
-    <aside class="sidebar">
-        <h3 style="padding-left:10px;">🏆 Ligas Populares</h3>
-        <div class="nav-item">🇵🇪 Liga 1 Perú</div>
-        <div class="nav-item">🇪🇺 Champions League</div>
-        <div class="nav-item">🏆 Copa Libertadores</div>
-        <div class="nav-item">🇪🇸 La Liga</div>
+<div class="app-container">
+    <aside class="hidden-mobile">
+        <div class="promo-box">
+            <small>CÓDIGO PROMO</small>
+            <div style="display:flex; gap:5px; margin-top:8px;">
+                <input type="text" id="promo-code" placeholder="RANA100" style="width:70%; padding:5px; border-radius:4px; border:none;">
+                <button onclick="applyPromo()" style="background:var(--rani-green); border:none; color:white; border-radius:4px; cursor:pointer;">OK</button>
+            </div>
+        </div>
+        <nav>
+            <div class="filter-chip active">⚽ Fútbol</div>
+            <div class="filter-chip">🎮 eFootball</div>
+            <div class="filter-chip">🏀 Basket</div>
+        </nav>
     </aside>
 
-    <!-- Centro: Partidos -->
     <main>
-        <div id="match-list">Cargando mercados...</div>
-        
-        <div id="history-section" style="display:none; margin-top:30px;">
-            <h3 style="margin-left:10px;">📋 Mis Apuestas Recientes</h3>
-            <div id="history-list"></div>
+        <div class="filter-bar">
+            <div class="filter-chip active">Todo</div>
+            <div class="filter-chip">En Vivo</div>
+            <div class="filter-chip">Liga 1 🇵🇪</div>
+            <div class="filter-chip">Mañana</div>
         </div>
+        <div id="matches-grid">Cargando mercados...</div>
     </main>
 
-    <!-- Derecha: Boleta -->
     <aside>
-        <div class="bet-slip">
-            <div class="slip-header">BOLETA DE APUESTA</div>
-            <div id="slip-empty" style="padding:40px; text-align:center; color:#999;">
-                Selecciona una cuota para apostar
+        <div class="slip-card">
+            <div class="slip-title">
+                <span>BOLETA</span>
+                <span id="slip-count" style="background:var(--rani-green); padding:2px 8px; border-radius:10px; font-size:12px;">0</span>
             </div>
-            <div id="slip-active" style="display:none; padding:15px;">
-                <div id="bet-details" style="font-size:14px; line-height:1.5;"></div>
-                <input type="number" id="bet-amount" class="bet-input" value="10">
-                <div style="display:flex; justify-content:space-between; margin:15px 0; font-weight:bold;">
-                    <span>Ganancia:</span>
-                    <span style="color:var(--rani-green)">RC <span id="potential-win">0.00</span></span>
+            <div id="slip-items" style="max-height:300px; overflow-y:auto;">
+                <p style="text-align:center; padding:30px; color:#999;">Selecciona cuotas para crear una combinada</p>
+            </div>
+            <div class="slip-footer" id="slip-footer" style="display:none;">
+                <div class="total-odds">
+                    <span>CUOTA TOTAL:</span>
+                    <span id="total-odd-val">0.00</span>
                 </div>
-                <button onclick="placeBet()" style="width:100%; padding:15px; background:var(--rani-green); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">APOSTAR AHORA</button>
+                <input type="number" id="bet-stake" style="width:100%; padding:12px; border:2px solid #ddd; border-radius:8px; margin-bottom:15px; font-size:18px; font-weight:bold; text-align:center;" value="10">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
+                    <span>PAGO POTENCIAL:</span>
+                    <span style="color:var(--rani-green)">RC <span id="pot-payout">0.00</span></span>
+                </div>
+                <button class="bet-btn" onclick="processBet()">APOSTAR AHORA</button>
             </div>
         </div>
     </aside>
 </div>
 
 <script>
-    let raniCoins = parseInt(localStorage.getItem('rani_coins')) || 500;
-    let betHistory = JSON.parse(localStorage.getItem('rani_history')) || [];
-    let currentSelection = null;
+    let coins = parseInt(localStorage.getItem('rani_coins')) || 500;
+    let selections = [];
 
-    // Sincronizar Balance
-    function updateUI() {
-        document.getElementById('balance-val').innerText = raniCoins;
-        localStorage.setItem('rani_coins', raniCoins);
-        renderHistory();
+    function updateBalance() {
+        document.getElementById('balance-txt').innerText = coins;
+        localStorage.setItem('rani_coins', coins);
     }
 
-    // Auth Google
-    function handleAuth(response) {
-        const user = JSON.parse(atob(response.credential.split('.')[1]));
-        document.querySelector('.g_id_signin').style.display = 'none';
-        document.getElementById('logged-in-ui').style.display = 'flex';
-        document.getElementById('history-section').style.display = 'block';
-        document.getElementById('user-photo').src = user.picture;
-        updateUI();
+    function onAuth(resp) {
+        const u = JSON.parse(atob(resp.credential.split('.')[1]));
+        document.getElementById('auth-ui').style.display = 'none';
+        document.getElementById('user-ui').style.display = 'flex';
+        document.getElementById('user-img').src = u.picture;
+        updateBalance();
     }
 
-    function logout() {
-        google.accounts.id.disableAutoSelect();
-        location.reload();
-    }
-
-    // Cargar Datos desde Google Sheets (Tu CSV)
-    async function fetchMatches() {
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-        const res = await fetch(CSV_URL);
-        const text = await res.text();
-        const rows = text.split('\n').slice(2); // Omitir cabeceras
-
-        document.getElementById('match-list').innerHTML = rows.map(row => {
-            const cols = row.split(',');
-            if(cols.length < 7) return "";
+    async function loadData() {
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
+        const res = await fetch(url);
+        const csv = await res.text();
+        const rows = csv.split('\n').slice(2);
+        
+        document.getElementById('matches-grid').innerHTML = rows.map((r, i) => {
+            const c = r.split(',');
+            if(c.length < 7) return "";
             return `
-                <div class="match-card">
-                    <div class="match-info">
-                        <span>⚽ ${cols[4]}</span>
-                        <span>${cols[5]}</span>
-                    </div>
-                    <div class="match-teams">${cols[0]}</div>
-                    <div class="market-grid">
-                        <div class="odd-box" onclick="selectOdd(this, '${cols[0]}', 'Local', ${cols[1]})">
-                            <small>Local</small><span class="odd-val">${cols[1]}</span>
-                        </div>
-                        <div class="odd-box" onclick="selectOdd(this, '${cols[0]}', 'Empate', ${cols[2]})">
-                            <small>Empate</small><span class="odd-val">${cols[2]}</span>
-                        </div>
-                        <div class="odd-box" onclick="selectOdd(this, '${cols[0]}', 'Visita', ${cols[3]})">
-                            <small>Visita</small><span class="odd-val">${cols[3]}</span>
+                <div class="card">
+                    <div class="card-header"><span>⚽ ${c[4]}</span> <span>${c[5]}</span></div>
+                    <div class="card-body">
+                        <div class="teams-row">${c[0]}</div>
+                        <div class="odds-row">
+                            <button class="odd-btn" onclick="addToSlip(this, '${c[0]}', 'Local', ${c[1]}, ${i})">
+                                <span class="odd-label">1</span> <span class="odd-value">${c[1]}</span>
+                            </button>
+                            <button class="odd-btn" onclick="addToSlip(this, '${c[0]}', 'Empate', ${c[2]}, ${i})">
+                                <span class="odd-label">X</span> <span class="odd-value">${c[2]}</span>
+                            </button>
+                            <button class="odd-btn" onclick="addToSlip(this, '${c[0]}', 'Visita', ${c[3]}, ${i})">
+                                <span class="odd-label">2</span> <span class="odd-value">${c[3]}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -163,69 +169,83 @@
         }).join('');
     }
 
-    // Selección de Apuesta
-    function selectOdd(element, match, pick, odd) {
-        document.querySelectorAll('.odd-box').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
+    function addToSlip(btn, match, pick, odd, matchId) {
+        // Evitar duplicados del mismo partido
+        selections = selections.filter(s => s.matchId !== matchId);
         
-        currentSelection = { match, pick, odd };
-        document.getElementById('slip-empty').style.display = 'none';
-        document.getElementById('slip-active').style.display = 'block';
-        document.getElementById('bet-details').innerHTML = `<strong>${match}</strong><br>Mercado: Ganador del Partido<br>Selección: <b>${pick}</b> @ ${odd}`;
-        calcWin();
-    }
-
-    function calcWin() {
-        const amt = document.getElementById('bet-amount').value;
-        document.getElementById('potential-win').innerText = (amt * currentSelection.odd).toFixed(2);
-    }
-    document.getElementById('bet-amount').addEventListener('input', calcWin);
-
-    // Procesar Apuesta
-    function placeBet() {
-        const amount = parseInt(document.getElementById('bet-amount').value);
-        if(amount > raniCoins) return alert("Saldo insuficiente de Rani Coins");
-        if(amount <= 0) return alert("Monto no válido");
-
-        raniCoins -= amount;
-        const newBet = {
-            id: 'TK-' + Math.floor(Math.random()*9000 + 1000),
-            match: currentSelection.match,
-            pick: currentSelection.pick,
-            odd: currentSelection.odd,
-            stake: amount,
-            status: 'Abierto',
-            date: new Date().toLocaleTimeString()
-        };
-
-        betHistory.unshift(newBet);
-        localStorage.setItem('rani_history', JSON.stringify(betHistory));
+        selections.push({ matchId, match, pick, odd });
+        updateSlipUI();
         
-        alert("¡Apuesta aceptada! Suerte, Roberto.");
-        updateUI();
-        resetSlip();
+        // Efecto visual
+        btn.parentElement.querySelectorAll('.odd-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
     }
 
-    function renderHistory() {
-        document.getElementById('history-list').innerHTML = betHistory.map(b => `
-            <div style="background:white; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #333; font-size:13px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <b>${b.id}</b> <span class="status-badge status-open">${b.status}</span>
-                </div>
-                <div>${b.match} - <b>${b.pick}</b> (@${b.odd})</div>
-                <div style="color:#666; margin-top:5px;">Apostado: ${b.stake} RC | Ganancia: ${(b.stake * b.odd).toFixed(2)} RC</div>
+    function updateSlipUI() {
+        const container = document.getElementById('slip-items');
+        const footer = document.getElementById('slip-footer');
+        const count = document.getElementById('slip-count');
+        
+        count.innerText = selections.length;
+
+        if(selections.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:30px; color:#999;">Selecciona cuotas</p>';
+            footer.style.display = 'none';
+            return;
+        }
+
+        footer.style.display = 'block';
+        container.innerHTML = selections.map((s, idx) => `
+            <div class="selection-item">
+                <span class="remove-sel" onclick="removeSel(${idx})">×</span>
+                <div style="font-weight:bold;">${s.match}</div>
+                <div style="color:var(--rani-green)">${s.pick} @ ${s.odd}</div>
             </div>
         `).join('');
+
+        const totalOdd = selections.reduce((acc, curr) => acc * curr.odd, 1).toFixed(2);
+        document.getElementById('total-odd-val').innerText = totalOdd;
+        calculatePayout();
     }
 
-    function resetSlip() {
-        document.getElementById('slip-active').style.display = 'none';
-        document.getElementById('slip-empty').style.display = 'block';
-        document.querySelectorAll('.odd-box').forEach(el => el.classList.remove('active'));
+    function calculatePayout() {
+        const odd = parseFloat(document.getElementById('total-odd-val').innerText);
+        const stake = parseFloat(document.getElementById('bet-stake').value) || 0;
+        document.getElementById('pot-payout').innerText = (odd * stake).toFixed(2);
     }
 
-    fetchMatches();
-    updateUI();
+    document.getElementById('bet-stake').addEventListener('input', calculatePayout);
+
+    function removeSel(idx) {
+        selections.splice(idx, 1);
+        updateSlipUI();
+    }
+
+    function processBet() {
+        const stake = parseFloat(document.getElementById('bet-stake').value);
+        if(stake > coins) return alert("Saldo insuficiente");
+        
+        coins -= stake;
+        updateBalance();
+        alert("¡Ticket Procesado! Suerte con tu combinada 🐸");
+        selections = [];
+        updateSlipUI();
+        document.querySelectorAll('.odd-btn').forEach(b => b.classList.remove('selected'));
+    }
+
+    function applyPromo() {
+        const code = document.getElementById('promo-code').value.toUpperCase();
+        if(code === 'RANA100' && !localStorage.getItem('promo_used')) {
+            coins += 100;
+            localStorage.setItem('promo_used', 'true');
+            updateBalance();
+            alert("Bono de 100 RC activado 🎁");
+        } else {
+            alert("Código inválido o ya usado");
+        }
+    }
+
+    loadData();
 </script>
 </body>
 </html>
