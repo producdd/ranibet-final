@@ -3,157 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaniBet | Mobile Optimized</title>
+    <title>RaniBet | Tickets e Historial</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root { --rani-green: #28a745; --bg: #f4f7f6; }
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); margin: 0; overflow-x: hidden; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
         
-        /* Header Responsivo */
-        header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; height: 60px; }
-        .logo { font-weight: bold; font-size: 18px; display: flex; align-items: center; gap: 5px; }
-        .user-area { display: flex; align-items: center; gap: 10px; }
-        .balance { background: #e8f5e9; color: var(--rani-green); padding: 4px 10px; border-radius: 15px; font-weight: bold; font-size: 13px; display: none; border: 1px solid var(--rani-green); white-space: nowrap; }
+        header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; }
+        .balance { background: #e8f5e9; color: var(--rani-green); padding: 5px 12px; border-radius: 20px; font-weight: bold; }
 
-        /* Layout Adaptable */
-        .main-container { display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 1400px; margin: 10px auto; padding: 0 10px; }
-        
-        @media (min-width: 1024px) {
-            .main-container { grid-template-columns: 240px 1fr 300px; padding: 0 20px; margin: 20px auto; }
-            .sidebar, .bet-slip { display: block !important; }
-        }
+        .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 15px auto; padding: 0 10px; }
+        @media (min-width: 1024px) { .main-container { grid-template-columns: 1fr 350px; } }
 
-        /* Sidebar - Oculto en móvil por defecto para dar espacio */
-        .sidebar { background: white; border-radius: 10px; border: 1px solid #eee; overflow: hidden; height: fit-content; display: none; }
-        .side-head { background: #f8f9fa; padding: 12px; font-size: 11px; font-weight: bold; border-bottom: 1px solid #eee; }
-        .side-link { padding: 12px; display: block; text-decoration: none; color: #444; border-bottom: 1px solid #f4f4f4; font-size: 14px; }
+        /* Partidos */
+        .match-card { background: white; border-radius: 10px; padding: 15px; border: 1px solid #eee; margin-bottom: 15px; }
+        .odds { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-odd { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #fff; }
+        .btn-odd.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
 
-        /* Banner Optimizado */
-        .banner { background: var(--rani-green); color: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; font-style: italic; position: relative; }
-        .banner h2 { margin: 0; font-size: 20px; text-transform: uppercase; line-height: 1.2; }
-        
-        /* Tarjetas de Partidos - Ajustadas para Touch */
-        .match-card { background: white; border-radius: 10px; padding: 12px; border: 1px solid #eee; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .match-info { font-size: 10px; color: #888; display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .teams { font-weight: bold; font-size: 15px; text-align: center; margin-bottom: 12px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
-        .odds { display: flex; gap: 8px; }
-        .btn-odd { flex: 1; border: 1px solid #ddd; padding: 12px 5px; border-radius: 8px; background: #fff; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .btn-odd b { display: block; font-size: 16px; color: var(--rani-green); }
+        /* Ticket e Historial */
+        .section-box { background: white; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px; overflow: hidden; }
+        .box-header { background: #212529; color: white; padding: 10px; font-weight: bold; text-align: center; }
+        .history-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .status-win { color: var(--rani-green); font-weight: bold; }
 
-        /* Boleto Flotante en Móvil */
-        .bet-slip { background: white; border-radius: 10px; border: 1px solid #eee; height: fit-content; position: sticky; top: 75px; z-index: 900; }
-        .slip-header { background: #212529; color: white; padding: 10px; font-weight: bold; text-align: center; font-size: 14px; }
-        .bet-box { padding: 12px; border-top: 1px solid #eee; display: none; }
-        .btn-bet { background: var(--rani-green); color: white; width: 100%; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        /* Modal de Ticket Exitoso */
+        #modal-ticket { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .ticket-virtual { background: white; width: 90%; max-width: 320px; padding: 20px; border-radius: 15px; text-align: center; border: 2px dashed #ccc; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo"><span>🐸</span> RANI<span style="color:var(--rani-green)">BET</span></div>
+    <div style="font-weight:bold;">🐸 RANI<span style="color:var(--rani-green)">BET</span></div>
     <div class="user-area">
         <div id="balance-ui" class="balance"><span id="coins-val">500</span> RC</div>
-        <div id="g_id_onload"
-             data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com"
-             data-callback="onSignIn"
-             data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="outline"></div>
-        <div id="profile-ui" style="display:none;">
-            <img id="u-img" src="" style="width:32px; height:32px; border-radius:50%; border: 2px solid var(--rani-green);">
-        </div>
+        <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="onSignIn"></div>
+        <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
     </div>
 </header>
 
 <div class="main-container">
-    <aside class="sidebar">
-        <div class="side-head">LIGAS</div>
-        <div class="side-link" style="font-weight:bold; color:var(--rani-green); background:#f0fff0;">🇵🇪 Liga 1</div>
-        <div class="side-link">🏆 Libertadores</div>
-    </aside>
-
     <main>
-        <div class="banner">
-            <h2>¡TU PRIMER DEPÓSITO VALE DOBLE!</h2>
-            <p style="margin:5px 0 0; font-size:12px;">Código: <b>RANA50</b></p>
-        </div>
         <div id="partidos-list"></div>
+        
+        <div class="section-box">
+            <div class="box-header">📋 MIS TICKETS (HISTORIAL)</div>
+            <div id="historial-lista">
+                <p style="text-align:center; padding:20px; color:#999;">No tienes apuestas registradas aún.</p>
+            </div>
+        </div>
     </main>
 
-    <aside class="bet-slip" id="ticket-area">
-        <div class="slip-header">BOLETO</div>
-        <div id="slip-msg" style="padding:15px; font-size:12px; text-align:center; color:#999;">Selecciona una cuota</div>
-        <div id="bet-ui" class="bet-box">
-            <div id="selection-summary" style="font-size:13px; margin-bottom:10px;"></div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <span style="font-size:12px;">Monto RC:</span>
-                <input type="number" id="bet-monto" value="10" style="width:70px; padding:5px; border:1px solid #ddd; border-radius:5px;">
+    <aside>
+        <div class="section-box" id="boleta-area">
+            <div class="box-header">BOLETO ACTUAL</div>
+            <div id="boleta-detalle" style="padding:20px; text-align:center; font-size:14px; color:#666;">Selecciona una cuota</div>
+            <div id="apuesta-form" style="padding:15px; border-top:1px solid #eee; display:none;">
+                <input type="number" id="monto-rc" value="10" style="width:100%; padding:10px; margin-bottom:10px;">
+                <button onclick="realizarApuesta()" style="background:var(--rani-green); color:white; border:none; width:100%; padding:15px; border-radius:8px; font-weight:bold; cursor:pointer;">CONFIRMAR APUESTA</button>
             </div>
-            <button class="btn-bet" onclick="confirmarApuesta()">APOSTAR</button>
         </div>
     </aside>
 </div>
 
-<script>
-    let userCoins = 500;
-    let selectedBet = null;
+<!-- Modal Ticket Éxito -->
+<div id="modal-ticket">
+    <div class="ticket-virtual">
+        <h3 style="margin-top:0; color:var(--rani-green);">✅ APUESTA REGISTRADA</h3>
+        <hr>
+        <div id="ticket-info" style="text-align:left; font-size:14px; line-height:1.6;"></div>
+        <hr>
+        <p style="font-size:12px; color:#888;">ID: <span id="ticket-id"></span></p>
+        <button onclick="cerrarTicket()" style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:5px; cursor:pointer;">CERRAR</button>
+    </div>
+</div>
 
-    function onSignIn(response) {
-        const payload = JSON.parse(atob(response.credential.split('.')[1]));
-        document.querySelector(".g_id_signin").style.display = "none";
-        document.getElementById("profile-ui").style.display = "block";
-        document.getElementById("balance-ui").style.display = "block";
-        document.getElementById("u-img").src = payload.picture;
+<script>
+    let coins = parseInt(localStorage.getItem('rani_coins')) || 500;
+    let historial = JSON.parse(localStorage.getItem('rani_historial')) || [];
+    let seleccion = null;
+
+    function actualizarBalance() {
+        document.getElementById("coins-val").innerText = coins;
+        localStorage.setItem('rani_coins', coins);
     }
 
     async function loadMatches() {
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-        try {
-            const res = await fetch(url);
-            const csv = await res.text();
-            const rows = csv.split("\n").slice(2);
-            document.getElementById("partidos-list").innerHTML = rows.map(r => {
-                const c = r.split(",");
-                if(c.length < 7) return "";
-                return `
-                    <div class="match-card">
-                        <div class="match-info"><span>${c[4]}</span> <b>${c[5]}</b></div>
-                        <div class="teams">${c[0]}</div>
-                        <div class="odds">
-                            <button class="btn-odd" onclick="pick(this, '${c[0]}', 'L', ${c[1]})">L<b>${c[1]}</b></button>
-                            <button class="btn-odd" onclick="pick(this, '${c[0]}', 'E', ${c[2]})">E<b>${c[2]}</b></button>
-                            <button class="btn-odd" onclick="pick(this, '${c[0]}', 'V', ${c[3]})">V<b>${c[3]}</b></button>
-                        </div>
-                    </div>`;
-            }).join("");
-        } catch(e) { console.error(e); }
+        const res = await fetch(url);
+        const data = await res.text();
+        const filas = data.split("\n").slice(2);
+        document.getElementById("partidos-list").innerHTML = filas.map(f => {
+            const c = f.split(",");
+            if(c.length < 7) return "";
+            return `<div class="match-card">
+                <div style="font-size:11px; color:#888;">${c[4]} | ${c[5]}</div>
+                <div style="font-weight:bold; margin:10px 0;">${c[0]}</div>
+                <div class="odds">
+                    <button class="btn-odd" onclick="pick(this,'${c[0]}','Local',${c[1]})">L<br>${c[1]}</button>
+                    <button class="btn-odd" onclick="pick(this,'${c[0]}','Empate',${c[2]})">E<br>${c[2]}</button>
+                    <button class="btn-odd" onclick="pick(this,'${c[0]}','Visita',${c[3]})">V<br>${c[3]}</button>
+                </div>
+            </div>`;
+        }).join("");
     }
 
-    function pick(el, match, type, odd) {
-        document.querySelectorAll('.btn-odd').forEach(b => {
-            b.style.background = "#fff";
-            b.style.color = "#333";
-        });
-        el.style.background = "var(--rani-green)";
-        el.style.color = "white";
-        selectedBet = { match, type, odd };
-        document.getElementById("slip-msg").style.display = "none";
-        document.getElementById("bet-ui").style.display = "block";
-        document.getElementById("selection-summary").innerHTML = `<b>${match}</b> (${type}) <br>Cuota: <b>${odd}</b>`;
-        // Scroll automático al ticket en móvil
-        if(window.innerWidth < 1024) document.getElementById("ticket-area").scrollIntoView({behavior: 'smooth'});
+    function pick(btn, partido, opcion, cuota) {
+        document.querySelectorAll('.btn-odd').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        seleccion = { partido, opcion, cuota };
+        document.getElementById("boleta-detalle").innerHTML = `<b>${partido}</b><br>${opcion} @ ${cuota}`;
+        document.getElementById("apuesta-form").style.display = "block";
     }
 
-    function confirmarApuesta() {
-        const m = parseInt(document.getElementById("bet-monto").value);
-        if(m > userCoins) return alert("Rani Coins insuficientes");
-        userCoins -= m;
-        document.getElementById("coins-val").innerText = userCoins;
-        alert("¡Apuesta realizada!");
+    function realizarApuesta() {
+        const monto = parseInt(document.getElementById("monto-rc").value);
+        if(monto > coins) return alert("Rani Coins insuficientes");
+
+        coins -= monto;
+        actualizarBalance();
+
+        const ticket = {
+            id: Math.random().toString(36).substr(2, 9).toUpperCase(),
+            partido: seleccion.partido,
+            opcion: seleccion.opcion,
+            cuota: seleccion.cuota,
+            monto: monto,
+            fecha: new Date().toLocaleString()
+        };
+
+        historial.unshift(ticket);
+        localStorage.setItem('rani_historial', JSON.stringify(historial));
+
+        mostrarTicket(ticket);
+        renderHistorial();
     }
 
+    function mostrarTicket(t) {
+        document.getElementById("ticket-id").innerText = t.id;
+        document.getElementById("ticket-info").innerHTML = `
+            <b>Evento:</b> ${t.partido}<br>
+            <b>Selección:</b> ${t.opcion}<br>
+            <b>Cuota:</b> ${t.cuota}<br>
+            <b>Monto:</b> ${t.monto} RC<br>
+            <b>Ganancia Potencial:</b> ${(t.monto * t.cuota).toFixed(2)} RC
+        `;
+        document.getElementById("modal-ticket").style.display = "flex";
+    }
+
+    function renderHistorial() {
+        if(historial.length === 0) return;
+        document.getElementById("historial-lista").innerHTML = historial.map(h => `
+            <div class="history-item">
+                <div style="display:flex; justify-content:space-between;">
+                    <b>${h.partido}</b>
+                    <span style="color:#888;">${h.id}</span>
+                </div>
+                <div>${h.opcion} @ ${h.cuota} | Apostado: ${h.monto} RC</div>
+                <div style="font-size:11px; color:#aaa;">${h.fecha}</div>
+            </div>
+        `).join("");
+    }
+
+    function cerrarTicket() {
+        document.getElementById("modal-ticket").style.display = "none";
+        location.reload();
+    }
+
+    actualizarBalance();
     loadMatches();
+    renderHistorial();
 </script>
 </body>
 </html>
