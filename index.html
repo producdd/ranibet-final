@@ -3,137 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RaniBet | Apuestas Reales</title>
+    <title>RaniBet | Apuestas Liga 1</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        :root { --rani-green: #28a745; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: #333; }
+        :root { --rani-green: #28a745; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; }
         
-        header { background: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 100; }
-        .logo-box { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 20px; }
-        .user-panel { display: flex; align-items: center; gap: 15px; }
-        .coins-display { background: #fff3cd; padding: 5px 12px; border-radius: 20px; font-weight: bold; border: 1px solid #ffeeba; display: none; }
+        header { background: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: bold; font-size: 22px; display: flex; align-items: center; gap: 8px; }
         
-        /* Layout */
-        .main-layout { display: grid; grid-template-columns: 240px 1fr 300px; gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 15px; }
-        .sidebar { background: white; border-radius: 8px; border: 1px solid #eee; height: fit-content; overflow: hidden; }
-        .side-title { background: #f8f9fa; padding: 10px 15px; font-size: 12px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; }
-        .side-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
-        .side-item.active { border-left: 4px solid var(--rani-green); background: #f0fff0; font-weight: bold; }
+        .user-area { display: flex; align-items: center; gap: 15px; }
+        .balance { background: #e8f5e9; color: var(--rani-green); padding: 5px 15px; border-radius: 20px; font-weight: bold; display: none; border: 1px solid var(--rani-green); }
 
-        /* Banner */
-        .banner { background: var(--rani-green); border-radius: 12px; padding: 30px; color: white; margin-bottom: 20px; position: relative; overflow: hidden; }
-        .banner h2 { margin: 0; font-style: italic; font-size: 26px; }
+        .main-container { display: grid; grid-template-columns: 250px 1fr 320px; gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 15px; }
+        
+        /* Ligas Sidebar */
+        .sidebar { background: white; border-radius: 10px; border: 1px solid #eee; overflow: hidden; height: fit-content; }
+        .side-head { background: #f8f9fa; padding: 12px; font-size: 12px; font-weight: bold; border-bottom: 1px solid #eee; }
+        .side-link { padding: 12px; display: block; text-decoration: none; color: #444; border-bottom: 1px solid #f4f4f4; cursor: pointer; }
+        .side-link.active { border-left: 4px solid var(--rani-green); background: #f0fff0; font-weight: bold; }
 
         /* Partidos */
-        .match-card { background: white; border-radius: 10px; border: 1px solid #eee; margin-bottom: 15px; padding: 15px; }
-        .match-teams { font-weight: bold; font-size: 16px; text-align: center; margin: 15px 0; }
-        .odds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .odd-btn { border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #fbfbfb; cursor: pointer; text-align: center; }
-        .odd-btn.selected { background: var(--rani-green); color: white; }
+        .match-card { background: white; border-radius: 10px; padding: 15px; border: 1px solid #eee; margin-bottom: 15px; }
+        .match-info { font-size: 11px; color: #888; display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .teams { font-weight: bold; font-size: 17px; text-align: center; margin-bottom: 15px; }
+        .odds { display: flex; gap: 10px; }
+        .btn-odd { flex: 1; border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #fff; cursor: pointer; transition: 0.2s; }
+        .btn-odd:hover { border-color: var(--rani-green); background: #f0fff0; }
+        .btn-odd.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
 
-        /* Ticket */
-        .bet-slip { background: white; border-radius: 8px; border: 1px solid #eee; height: fit-content; position: sticky; top: 80px; }
-        .slip-header { background: #222; color: white; padding: 12px; font-weight: bold; }
-        .slip-content { padding: 15px; min-height: 100px; font-size: 13px; text-align: center; }
-        .bet-actions { border-top: 1px solid #eee; padding: 15px; display: none; }
-        .btn-apostar { background: var(--rani-green); color: white; width: 100%; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        /* Boleto */
+        .bet-slip { background: white; border-radius: 10px; border: 1px solid #eee; height: fit-content; position: sticky; top: 80px; }
+        .slip-header { background: #212529; color: white; padding: 12px; font-weight: bold; text-align: center; border-radius: 10px 10px 0 0; }
+        .slip-body { padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .bet-box { padding: 15px; border-top: 1px solid #eee; display: none; }
+        .btn-bet { background: var(--rani-green); color: white; width: 100%; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        @media (max-width: 1100px) { .main-container { grid-template-columns: 1fr; } .sidebar, .bet-slip { display: none; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-box"><span>🐸</span> RANI<span style="color:var(--rani-green)">BET</span></div>
-    <div class="user-panel">
-        <div id="coins-container" class="coins-display">💰 <span id="user-coins">500</span> RC</div>
+    <div class="logo"><span>🐸</span> RANI<span style="color:var(--rani-green)">BET</span></div>
+    <div class="user-area">
+        <div id="balance-ui" class="balance">💰 <span id="coins-val">500</span> RC</div>
         <div id="g_id_onload"
              data-client_id="845543666326-0nsqm9unm5888e999v7d9p0m0h1e7h2j.apps.googleusercontent.com"
-             data-callback="handleCredentialResponse">
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="onSignIn"
+             data-auto_prompt="false">
         </div>
-        <div class="g_id_signin" data-type="standard"></div>
-        <div id="user-profile" style="display:none; align-items:center; gap:10px;">
-            <span id="user-name" style="font-weight:bold; font-size:14px;"></span>
-            <img id="user-img" src="" style="width:32px; border-radius:50%;">
+        <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+        <div id="profile-ui" style="display:none; align-items:center; gap:10px;">
+            <img id="u-img" src="" style="width:35px; border-radius:50%; border: 2px solid var(--rani-green);">
         </div>
     </div>
 </header>
 
-<div class="main-layout">
+<div class="main-container">
     <aside class="sidebar">
-        <div class="side-title">LIGAS</div>
-        <div class="side-item active">🇵🇪 Liga 1</div>
-        <div class="side-item">🏆 Libertadores</div>
+        <div class="side-head">COMPETENCIAS</div>
+        <div class="side-link active">🇵🇪 Liga 1 Perú</div>
+        <div class="side-link">🏆 Copa Libertadores</div>
+        <div class="side-link">🇪🇸 La Liga</div>
     </aside>
 
     <main>
-        <div class="banner">
-            <h2>¡TU PRIMER DEPÓSITO VALE DOBLE!</h2>
+        <div style="background:var(--rani-green); color:white; padding:25px; border-radius:15px; margin-bottom:20px; font-style:italic;">
+            <h2 style="margin:0">¡PRIMER DEPÓSITO VALE DOBLE!</h2>
+            <p style="margin:5px 0 0">Usa el código: <b>RANA50</b></p>
         </div>
-        <div id="lista-partidos"></div>
+        <div id="partidos-list"></div>
     </main>
 
     <aside class="bet-slip">
         <div class="slip-header">BOLETO DE APUESTA</div>
-        <div id="slip-body" class="slip-content">Selecciona una cuota</div>
-        <div id="bet-actions" class="bet-actions">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>Monto:</span> <input type="number" id="bet-amount" value="10" style="width:60px;">
+        <div id="slip-msg" class="slip-body">Selecciona una cuota para apostar</div>
+        <div id="bet-ui" class="bet-box">
+            <div id="selection-summary" style="text-align:left; margin-bottom:15px; font-size:13px;"></div>
+            <input type="number" id="bet-monto" value="10" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--rani-green);">
+                <span>Ganas:</span> <span id="ganancia-val">0.00</span>
             </div>
-            <button class="btn-apostar" onclick="apostar()">APRESTAR AHORA</button>
+            <button class="btn-bet" onclick="confirmarApuesta()">APRESTAR AHORA</button>
         </div>
     </aside>
 </div>
 
 <script>
-    let coins = 500;
-    let seleccionActual = null;
+    let userCoins = 500;
+    let selectedBet = null;
 
-    function handleCredentialResponse(response) {
-        const data = JSON.parse(atob(response.credential.split('.')[1]));
+    function onSignIn(response) {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
         document.querySelector(".g_id_signin").style.display = "none";
-        document.getElementById("user-profile").style.display = "flex";
-        document.getElementById("coins-container").style.display = "block";
-        document.getElementById("user-name").innerText = data.given_name;
-        document.getElementById("user-img").src = data.picture;
-        console.log("Sesión iniciada como: " + data.name);
+        document.getElementById("profile-ui").style.display = "flex";
+        document.getElementById("balance-ui").style.display = "block";
+        document.getElementById("u-img").src = payload.picture;
+        console.log("Bienvenido, " + payload.name);
     }
 
-    async function cargarPartidos() {
+    async function loadMatches() {
         const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
         const res = await fetch(url);
         const csv = await res.text();
-        const filas = csv.split("\n").slice(2);
+        const rows = csv.split("\n").slice(2);
         
-        document.getElementById("lista-partidos").innerHTML = filas.map((f, i) => {
-            const c = f.split(",");
-            if (c.length < 7) return "";
+        document.getElementById("partidos-list").innerHTML = rows.map((r, i) => {
+            const c = r.split(",");
+            if(c.length < 7) return "";
             return `
                 <div class="match-card">
-                    <div class="match-teams">${c[0]}</div>
-                    <div class="odds-grid">
-                        <div class="odd-btn" onclick="addTicket('${c[0]}', ${c[1]}, 'Local')">1<br><b>${c[1]}</b></div>
-                        <div class="odd-btn" onclick="addTicket('${c[0]}', ${c[2]}, 'Empate')">X<br><b>${c[2]}</b></div>
-                        <div class="odd-btn" onclick="addTicket('${c[0]}', ${c[3]}, 'Visita')">2<br><b>${c[3]}</b></div>
+                    <div class="match-info"><span>${c[4]}</span> <span>${c[5]}</span></div>
+                    <div class="teams">${c[0]}</div>
+                    <div class="odds">
+                        <button class="btn-odd" onclick="pick(this, '${c[0]}', 'Local', ${c[1]})">L<br><b>${c[1]}</b></button>
+                        <button class="btn-odd" onclick="pick(this, '${c[0]}', 'Empate', ${c[2]})">E<br><b>${c[2]}</b></button>
+                        <button class="btn-odd" onclick="pick(this, '${c[0]}', 'Visita', ${c[3]})">V<br><b>${c[3]}</b></button>
                     </div>
                 </div>`;
         }).join("");
     }
 
-    function addTicket(partido, cuota, tipo) {
-        seleccionActual = { partido, cuota, monto: 10 };
-        document.getElementById("slip-body").innerHTML = `<b>${partido}</b><br>${tipo}: ${cuota}`;
-        document.getElementById("bet-actions").style.display = "block";
+    function pick(el, match, type, odd) {
+        document.querySelectorAll('.btn-odd').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedBet = { match, type, odd };
+        
+        document.getElementById("slip-msg").style.display = "none";
+        document.getElementById("bet-ui").style.display = "block";
+        document.getElementById("selection-summary").innerHTML = `<b>${match}</b><br><span style="color:#666">${type} @ ${odd}</span>`;
+        calc();
     }
 
-    function apostar() {
-        const monto = parseInt(document.getElementById("bet-amount").value);
-        if(monto > coins) return alert("Rani Coins insuficientes");
-        coins -= monto;
-        document.getElementById("user-coins").innerText = coins;
-        alert("¡Apuesta exitosa!");
+    function calc() {
+        const m = document.getElementById("bet-monto").value;
+        if(selectedBet) document.getElementById("ganancia-val").innerText = (m * selectedBet.odd).toFixed(2);
     }
 
-    cargarPartidos();
+    function confirmarApuesta() {
+        const m = parseInt(document.getElementById("bet-monto").value);
+        if(m > userCoins) return alert("No tienes suficientes Rani Coins");
+        userCoins -= m;
+        document.getElementById("coins-val").innerText = userCoins;
+        alert("¡Apuesta procesada! Suerte, crack.");
+    }
+
+    document.getElementById("bet-monto").addEventListener("input", calc);
+    loadMatches();
 </script>
 </body>
 </html>
