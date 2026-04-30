@@ -3,124 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RaniBet - Liga 1</title>
+    <title>RaniBet | Sistema de Apuestas</title>
     <style>
-        :root { --rani-green: #28a745; --bg-light: #f4f7f6; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-light); margin: 0; color: #333; }
+        :root { --rani-green: #28a745; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: #333; }
         
-        /* Header */
-        header { background: #fff; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); }
-        .logo-container { display: flex; align-items: center; gap: 10px; }
-        .logo-text { font-weight: bold; font-size: 22px; color: #1a3a3a; letter-spacing: -1px; }
+        /* Header Superior */
+        header { background: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 100; }
+        .logo-box { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 20px; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .coins-display { background: #fff3cd; padding: 5px 12px; border-radius: 20px; font-weight: bold; border: 1px solid #ffeeba; }
         .google-btn { border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; background: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; }
 
-        /* Layout */
-        .main-container { max-width: 1200px; margin: 20px auto; display: flex; gap: 20px; padding: 0 15px; }
-        .sidebar { width: 250px; flex-shrink: 0; }
-        .content { flex-grow: 1; }
+        /* Layout Principal */
+        .main-layout { display: grid; grid-template-columns: 240px 1fr 300px; gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 15px; }
 
-        /* Banner */
-        .banner { background: var(--rani-green); border-radius: 15px; padding: 30px; color: white; position: relative; overflow: hidden; margin-bottom: 20px; }
-        .banner h2 { margin: 0; font-style: italic; font-size: 28px; text-transform: uppercase; }
-        .banner p { margin: 10px 0; font-size: 14px; }
-        .promo-code { background: white; color: var(--rani-green); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .banner-bg-text { position: absolute; right: -20px; bottom: -10px; font-size: 100px; font-weight: bold; opacity: 0.1; font-style: italic; }
+        /* Sidebar Ligas */
+        .sidebar { background: white; border-radius: 8px; border: 1px solid #eee; height: fit-content; overflow: hidden; }
+        .side-title { background: #f8f9fa; padding: 10px 15px; font-size: 12px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; }
+        .side-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f9f9f9; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .side-item:hover { background: #f0fff0; color: var(--rani-green); }
+        .side-item.active { border-left: 4px solid var(--rani-green); background: #f0fff0; font-weight: bold; }
 
-        /* Competencias Sidebar */
-        .section-title { font-size: 12px; font-weight: bold; text-transform: uppercase; color: #444; border-left: 4px solid var(--rani-green); padding-left: 10px; margin-bottom: 15px; }
-        .comp-list { background: white; border-radius: 8px; border: 1px solid #eee; overflow: hidden; }
-        .comp-item { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 13px; cursor: pointer; }
-        .comp-item.active { border-left: 4px solid var(--rani-green); background: #f9fff9; font-weight: bold; }
+        /* Contenido Central */
+        .banner { background: var(--rani-green); border-radius: 12px; padding: 30px; color: white; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .banner h2 { margin: 0; font-style: italic; font-size: 26px; }
+        .promo-pill { background: white; color: var(--rani-green); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
 
-        /* Partidos Grid */
-        .partidos-grid { display: grid; gap: 15px; }
-        .partido-card { background: white; border-radius: 10px; padding: 15px; border: 1px solid #eee; display: flex; flex-direction: column; }
-        .card-header { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 10px; }
-        .teams { font-weight: bold; font-size: 16px; margin-bottom: 15px; text-align: center; }
-        .odds-container { display: flex; gap: 8px; }
-        .odd-box { flex: 1; background: #f8f9fa; border: 1px solid #ddd; padding: 10px; border-radius: 6px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .odd-box:hover { border-color: var(--rani-green); background: #f0fff0; }
-        .odd-box span { display: block; font-size: 10px; color: #999; }
-        .odd-box b { color: var(--rani-green); font-size: 15px; }
+        /* Tarjetas de Partidos */
+        .match-card { background: white; border-radius: 10px; border: 1px solid #eee; margin-bottom: 15px; padding: 15px; }
+        .match-header { font-size: 11px; color: #888; display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .match-teams { font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 15px; }
+        .odds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .odd-btn { border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #fbfbfb; cursor: pointer; text-align: center; transition: 0.2s; }
+        .odd-btn:hover { border-color: var(--rani-green); background: #f0fff0; }
+        .odd-btn.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
+        .odd-btn span { display: block; font-size: 10px; opacity: 0.7; }
 
-        @media (max-width: 768px) {
-            .main-container { flex-direction: column; }
-            .sidebar { width: 100%; order: 2; }
-            .content { order: 1; }
-        }
+        /* Boleto de Apuesta (Derecha) */
+        .bet-slip { background: white; border-radius: 8px; border: 1px solid #eee; height: fit-content; position: sticky; top: 80px; }
+        .slip-header { background: #222; color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .slip-count { background: var(--rani-green); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        .slip-content { padding: 15px; min-height: 100px; font-size: 13px; color: #666; text-align: center; }
+        .selection-card { border: 1px solid #eee; padding: 10px; border-radius: 5px; text-align: left; margin-bottom: 10px; background: #fafafa; }
+        .bet-input-box { border-top: 1px solid #eee; padding: 15px; display: none; }
+        .bet-input-box.active { display: block; }
+        .place-bet-btn { background: var(--rani-green); color: white; width: 100%; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } .sidebar, .bet-slip { display: none; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-container">
-        <span style="font-size: 30px;">🐸</span>
-        <span class="logo-text">RANI<span style="color:var(--rani-green)">BET</span></span>
+    <div class="logo-box">
+        <span style="font-size: 28px;">🐸</span>
+        <span>RANI<span style="color:var(--rani-green)">BET</span></span>
     </div>
-    <button class="google-btn">
-        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="18"> Acceder con Google
-    </button>
+    <div class="user-info">
+        <div class="coins-display">💰 <span id="user-coins">500</span> RC</div>
+        <button class="google-btn">
+            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="16"> Acceder
+        </button>
+    </div>
 </header>
 
-<div class="main-container">
+<div class="main-layout">
     <aside class="sidebar">
-        <div class="section-title">Competencias</div>
-        <div class="comp-list">
-            <div class="comp-item active">🇵🇪 Liga 1 Perú ★</div>
-            <div class="comp-item">🇪🇸 La Liga</div>
-            <div class="comp-item">🇬🇧 Premier League</div>
-        </div>
+        <div class="side-title">LIGAS</div>
+        <div class="side-item active">🇵🇪 Liga 1</div>
+        <div class="side-item">🏆 Libertadores</div>
+        <div class="side-item">🇪🇸 La Liga</div>
         
-        <div class="section-title" style="margin-top:20px;">Canjear Bono</div>
-        <div style="background:white; padding:15px; border-radius:8px; border:1px solid #eee; text-align:center;">
-            <input type="text" placeholder="EJ: RANA50" style="width:90%; padding:10px; border:1px solid #ddd; border-radius:5px; margin-bottom:10px; text-align:center; background:#f8f9fa;">
-            <button style="background:var(--rani-green); color:white; border:none; width:100%; padding:12px; border-radius:5px; font-weight:bold; cursor:pointer;">RECLAMAR RANI COINS</button>
+        <div class="side-title" style="margin-top:20px;">CÓDIGO</div>
+        <div style="padding:15px;">
+            <input type="text" id="promo-input" placeholder="CÓDIGO" style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #ddd; border-radius:5px; text-align:center;">
+            <button onclick="canjear()" style="background:var(--rani-green); color:white; border:none; width:100%; padding:10px; border-radius:5px; margin-top:8px; cursor:pointer; font-weight:bold;">CANJEAR</button>
         </div>
     </aside>
 
-    <main class="content">
+    <main>
         <div class="banner">
-            <h2>¡Tu primer depósito vale doble!</h2>
-            <p>Usa el código <span class="promo-code">RANA50</span></p>
-            <div class="banner-bg-text">LIGA 1</div>
+            <h2>¡TU PRIMER DEPÓSITO VALE DOBLE!</h2>
+            <p>Usa el código <span class="promo-pill">RANA50</span></p>
         </div>
 
-        <div id="lista-partidos" class="partidos-grid">
-            <!-- Cargando desde Excel... -->
-        </div>
+        <h3 style="color:#1a3a3a; font-size:18px;">⚽ PRÓXIMOS PARTIDOS</h3>
+        <div id="lista-partidos">
+            </div>
     </main>
+
+    <aside class="bet-slip">
+        <div class="slip-header">
+            BOLETO DE APUESTA <span class="slip-count" id="slip-qty">0</span>
+        </div>
+        <div id="slip-body" class="slip-content">
+            Haz clic en una cuota para añadir tu apuesta
+        </div>
+        <div id="bet-actions" class="bet-input-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>Monto:</span>
+                <input type="number" id="bet-amount" value="10" style="width:70px; text-align:right;">
+            </div>
+            <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--rani-green);">
+                <span>Ganancia:</span>
+                <span id="bet-win">0.00</span>
+            </div>
+            <button class="place-bet-btn" onclick="procesarApuesta()">APRESTAR AHORA</button>
+        </div>
+    </aside>
 </div>
 
 <script>
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-    
-    async function cargarPartidos() {
+    let coins = 500;
+    let seleccion = null;
+    const urlExcel = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
+
+    async function cargarData() {
         try {
-            const res = await fetch(url);
-            const data = await res.text();
-            const filas = data.split("\n").slice(2);
+            const res = await fetch(urlExcel);
+            const csv = await res.text();
+            const filas = csv.split("\n").slice(2);
             
-            document.getElementById("lista-partidos").innerHTML = filas.map(f => {
+            document.getElementById("lista-partidos").innerHTML = filas.map((f, i) => {
                 const c = f.split(",");
                 if (c.length < 7) return "";
-                const enVivo = c[6].toUpperCase().includes("VIVO");
+                const local = c[0].split(" vs ")[0];
+                const visita = c[0].split(" vs ")[1];
                 return `
-                    <div class="partido-card">
-                        <div class="card-header">
-                            <span>${c[4]}</span>
-                            <span style="color:${enVivo?'red':'#888'}">${enVivo ? '🔴 EN VIVO' : c[5]}</span>
-                        </div>
-                        <div class="teams">${c[0]}</div>
-                        <div class="odds-container">
-                            <div class="odd-box"><span>Local</span><b>${c[1]}</b></div>
-                            <div class="odd-box"><span>Empate</span><b>${c[2]}</b></div>
-                            <div class="odd-box"><span>Visita</span><b>${c[3]}</b></div>
+                    <div class="match-card">
+                        <div class="match-header"><span>${c[4]}</span> <span>${c[5]}</span></div>
+                        <div class="match-teams">${local} vs ${visita}</div>
+                        <div class="odds-grid">
+                            <div class="odd-btn" onclick="seleccionar(${i}, 'L', '${local}', ${c[1]})"><span>1</span><b>${c[1]}</b></div>
+                            <div class="odd-btn" onclick="seleccionar(${i}, 'E', 'Empate', ${c[2]})"><span>X</span><b>${c[2]}</b></div>
+                            <div class="odd-btn" onclick="seleccionar(${i}, 'V', '${visita}', ${c[3]})"><span>2</span><b>${c[3]}</b></div>
                         </div>
                     </div>`;
             }).join("");
-        } catch (e) { console.error(e); }
+        } catch(e) { console.error(e); }
     }
-    cargarPartidos();
+
+    function seleccionar(id, tipo, nombre, cuota) {
+        seleccion = { id, tipo, nombre, cuota };
+        document.querySelectorAll('.odd-btn').forEach(b => b.classList.remove('selected'));
+        
+        document.getElementById("slip-qty").innerText = "1";
+        document.getElementById("slip-body").innerHTML = `
+            <div class="selection-card">
+                <b>${nombre}</b> <span style="float:right">${cuota}</span><br>
+                <small style="color:var(--rani-green)">Ganador del partido</small>
+            </div>`;
+        document.getElementById("bet-actions").classList.add("active");
+        actualizarGanancia();
+    }
+
+    function actualizarGanancia() {
+        const monto = document.getElementById("bet-amount").value;
+        if (seleccion) {
+            document.getElementById("bet-win").innerText = (monto * seleccion.cuota).toFixed(2);
+        }
+    }
+
+    function procesarApuesta() {
+        const monto = parseInt(document.getElementById("bet-amount").value);
+        if (monto > coins) {
+            alert("¡No tienes suficientes Rani Coins!");
+            return;
+        }
+        coins -= monto;
+        document.getElementById("user-coins").innerText = coins;
+        alert("¡Apuesta realizada con éxito! Suerte.");
+        location.reload(); 
+    }
+
+    function canjear() {
+        const code = document.getElementById("promo-input").value;
+        if(code === "RANA50") {
+            coins += 50;
+            document.getElementById("user-coins").innerText = coins;
+            alert("¡50 Rani Coins añadidos!");
+        }
+    }
+
+    document.getElementById("bet-amount").addEventListener("input", actualizarGanancia);
+    cargarData();
 </script>
 
 </body>
