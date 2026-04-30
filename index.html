@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaniBet | Tickets e Historial</title>
+    <title>RaniBet | Sesión y Persistencia</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root { --rani-green: #28a745; --bg: #f4f7f6; }
@@ -11,24 +11,23 @@
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
         
         header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; }
-        .balance { background: #e8f5e9; color: var(--rani-green); padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+        .user-panel { display: flex; align-items: center; gap: 10px; }
+        .balance { background: #e8f5e9; color: var(--rani-green); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+        
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; margin-left: 5px; }
 
         .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 15px auto; padding: 0 10px; }
         @media (min-width: 1024px) { .main-container { grid-template-columns: 1fr 350px; } }
 
-        /* Partidos */
         .match-card { background: white; border-radius: 10px; padding: 15px; border: 1px solid #eee; margin-bottom: 15px; }
         .odds { display: flex; gap: 8px; margin-top: 10px; }
         .btn-odd { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #fff; }
         .btn-odd.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
 
-        /* Ticket e Historial */
         .section-box { background: white; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px; overflow: hidden; }
         .box-header { background: #212529; color: white; padding: 10px; font-weight: bold; text-align: center; }
         .history-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
-        .status-win { color: var(--rani-green); font-weight: bold; }
 
-        /* Modal de Ticket Exitoso */
         #modal-ticket { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
         .ticket-virtual { background: white; width: 90%; max-width: 320px; padding: 20px; border-radius: 15px; text-align: center; border: 2px dashed #ccc; }
     </style>
@@ -37,27 +36,27 @@
 
 <header>
     <div style="font-weight:bold;">🐸 RANI<span style="color:var(--rani-green)">BET</span></div>
-    <div class="user-area">
-        <div id="balance-ui" class="balance"><span id="coins-val">500</span> RC</div>
+    <div class="user-panel">
+        <div id="balance-ui" class="balance" style="display:none;"><span id="coins-val"></span> RC</div>
         <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="onSignIn"></div>
         <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
+        <div id="profile-area" style="display:none; align-items:center;">
+            <img id="u-img" src="" style="width:30px; border-radius:50%; margin-right:5px;">
+            <button class="logout-btn" onclick="logout()">Salir</button>
+        </div>
     </div>
 </header>
 
 <div class="main-container">
     <main>
         <div id="partidos-list"></div>
-        
         <div class="section-box">
             <div class="box-header">📋 MIS TICKETS (HISTORIAL)</div>
-            <div id="historial-lista">
-                <p style="text-align:center; padding:20px; color:#999;">No tienes apuestas registradas aún.</p>
-            </div>
+            <div id="historial-lista"></div>
         </div>
     </main>
-
     <aside>
-        <div class="section-box" id="boleta-area">
+        <div class="section-box">
             <div class="box-header">BOLETO ACTUAL</div>
             <div id="boleta-detalle" style="padding:20px; text-align:center; font-size:14px; color:#666;">Selecciona una cuota</div>
             <div id="apuesta-form" style="padding:15px; border-top:1px solid #eee; display:none;">
@@ -68,26 +67,37 @@
     </aside>
 </div>
 
-<!-- Modal Ticket Éxito -->
 <div id="modal-ticket">
     <div class="ticket-virtual">
-        <h3 style="margin-top:0; color:var(--rani-green);">✅ APUESTA REGISTRADA</h3>
-        <hr>
-        <div id="ticket-info" style="text-align:left; font-size:14px; line-height:1.6;"></div>
-        <hr>
-        <p style="font-size:12px; color:#888;">ID: <span id="ticket-id"></span></p>
-        <button onclick="cerrarTicket()" style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:5px; cursor:pointer;">CERRAR</button>
+        <h3 style="color:var(--rani-green);">✅ TICKET DE APUESTA</h3>
+        <hr><div id="ticket-info" style="text-align:left; font-size:14px;"></div><hr>
+        <button onclick="cerrarTicket()" style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:5px;">CERRAR</button>
     </div>
 </div>
 
 <script>
-    let coins = parseInt(localStorage.getItem('rani_coins')) || 500;
+    // Inicialización de Monedas (Prioriza lo guardado)
+    let coins = localStorage.getItem('rani_coins') ? parseInt(localStorage.getItem('rani_coins')) : 500;
     let historial = JSON.parse(localStorage.getItem('rani_historial')) || [];
     let seleccion = null;
 
     function actualizarBalance() {
         document.getElementById("coins-val").innerText = coins;
         localStorage.setItem('rani_coins', coins);
+    }
+
+    function onSignIn(response) {
+        const user = JSON.parse(atob(response.credential.split('.')[1]));
+        document.querySelector(".g_id_signin").style.display = "none";
+        document.getElementById("balance-ui").style.display = "block";
+        document.getElementById("profile-area").style.display = "flex";
+        document.getElementById("u-img").src = user.picture;
+        actualizarBalance();
+    }
+
+    function logout() {
+        google.accounts.id.disableAutoSelect();
+        location.reload(); // Recarga limpia
     }
 
     async function loadMatches() {
@@ -102,9 +112,9 @@
                 <div style="font-size:11px; color:#888;">${c[4]} | ${c[5]}</div>
                 <div style="font-weight:bold; margin:10px 0;">${c[0]}</div>
                 <div class="odds">
-                    <button class="btn-odd" onclick="pick(this,'${c[0]}','Local',${c[1]})">L<br>${c[1]}</button>
-                    <button class="btn-odd" onclick="pick(this,'${c[0]}','Empate',${c[2]})">E<br>${c[2]}</button>
-                    <button class="btn-odd" onclick="pick(this,'${c[0]}','Visita',${c[3]})">V<br>${c[3]}</button>
+                    <button class="btn-odd" onclick="pick(this,'${c[0]}','L',${c[1]})">L<br>${c[1]}</button>
+                    <button class="btn-odd" onclick="pick(this,'${c[0]}','E',${c[2]})">E<br>${c[2]}</button>
+                    <button class="btn-odd" onclick="pick(this,'${c[0]}','V',${c[3]})">V<br>${c[3]}</button>
                 </div>
             </div>`;
         }).join("");
@@ -121,56 +131,27 @@
     function realizarApuesta() {
         const monto = parseInt(document.getElementById("monto-rc").value);
         if(monto > coins) return alert("Rani Coins insuficientes");
-
         coins -= monto;
         actualizarBalance();
-
-        const ticket = {
-            id: Math.random().toString(36).substr(2, 9).toUpperCase(),
-            partido: seleccion.partido,
-            opcion: seleccion.opcion,
-            cuota: seleccion.cuota,
-            monto: monto,
-            fecha: new Date().toLocaleString()
-        };
-
+        const ticket = { partido: seleccion.partido, opcion: seleccion.opcion, cuota: seleccion.cuota, monto, fecha: new Date().toLocaleString() };
         historial.unshift(ticket);
         localStorage.setItem('rani_historial', JSON.stringify(historial));
-
         mostrarTicket(ticket);
         renderHistorial();
     }
 
     function mostrarTicket(t) {
-        document.getElementById("ticket-id").innerText = t.id;
-        document.getElementById("ticket-info").innerHTML = `
-            <b>Evento:</b> ${t.partido}<br>
-            <b>Selección:</b> ${t.opcion}<br>
-            <b>Cuota:</b> ${t.cuota}<br>
-            <b>Monto:</b> ${t.monto} RC<br>
-            <b>Ganancia Potencial:</b> ${(t.monto * t.cuota).toFixed(2)} RC
-        `;
+        document.getElementById("ticket-info").innerHTML = `<b>Evento:</b> ${t.partido}<br><b>Cuota:</b> ${t.cuota}<br><b>Apostado:</b> ${t.monto} RC`;
         document.getElementById("modal-ticket").style.display = "flex";
     }
 
     function renderHistorial() {
-        if(historial.length === 0) return;
-        document.getElementById("historial-lista").innerHTML = historial.map(h => `
-            <div class="history-item">
-                <div style="display:flex; justify-content:space-between;">
-                    <b>${h.partido}</b>
-                    <span style="color:#888;">${h.id}</span>
-                </div>
-                <div>${h.opcion} @ ${h.cuota} | Apostado: ${h.monto} RC</div>
-                <div style="font-size:11px; color:#aaa;">${h.fecha}</div>
-            </div>
+        document.getElementById("historial-lista").innerHTML = historial.length === 0 ? '<p style="padding:20px; color:#999; text-align:center;">Sin apuestas</p>' : historial.map(h => `
+            <div class="history-item"><b>${h.partido}</b><br>${h.opcion} @ ${h.cuota} | ${h.monto} RC</div>
         `).join("");
     }
 
-    function cerrarTicket() {
-        document.getElementById("modal-ticket").style.display = "none";
-        location.reload();
-    }
+    function cerrarTicket() { document.getElementById("modal-ticket").style.display = "none"; }
 
     actualizarBalance();
     loadMatches();
