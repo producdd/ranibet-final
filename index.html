@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaniBet | Sesión y Persistencia</title>
+    <title>RaniBet | Privacidad de Tickets</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root { --rani-green: #28a745; --bg: #f4f7f6; }
@@ -13,8 +13,7 @@
         header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; }
         .user-panel { display: flex; align-items: center; gap: 10px; }
         .balance { background: #e8f5e9; color: var(--rani-green); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-        
-        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; margin-left: 5px; }
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; }
 
         .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 15px auto; padding: 0 10px; }
         @media (min-width: 1024px) { .main-container { grid-template-columns: 1fr 350px; } }
@@ -50,11 +49,14 @@
 <div class="main-container">
     <main>
         <div id="partidos-list"></div>
-        <div class="section-box">
+        
+        <!-- Sección de Historial: Oculta por defecto -->
+        <div class="section-box" id="historial-container" style="display:none;">
             <div class="box-header">📋 MIS TICKETS (HISTORIAL)</div>
             <div id="historial-lista"></div>
         </div>
     </main>
+
     <aside>
         <div class="section-box">
             <div class="box-header">BOLETO ACTUAL</div>
@@ -76,7 +78,6 @@
 </div>
 
 <script>
-    // Inicialización de Monedas (Prioriza lo guardado)
     let coins = localStorage.getItem('rani_coins') ? parseInt(localStorage.getItem('rani_coins')) : 500;
     let historial = JSON.parse(localStorage.getItem('rani_historial')) || [];
     let seleccion = null;
@@ -92,12 +93,19 @@
         document.getElementById("balance-ui").style.display = "block";
         document.getElementById("profile-area").style.display = "flex";
         document.getElementById("u-img").src = user.picture;
+        
+        // MOSTRAR HISTORIAL AL LOGUEARSE
+        document.getElementById("historial-container").style.display = "block";
+        
         actualizarBalance();
+        renderHistorial();
     }
 
     function logout() {
         google.accounts.id.disableAutoSelect();
-        location.reload(); // Recarga limpia
+        // OCULTAR HISTORIAL AL SALIR
+        document.getElementById("historial-container").style.display = "none";
+        location.reload();
     }
 
     async function loadMatches() {
@@ -155,7 +163,6 @@
 
     actualizarBalance();
     loadMatches();
-    renderHistorial();
 </script>
 </body>
 </html>
