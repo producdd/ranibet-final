@@ -3,119 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaniBet Elite | Casa de Apuestas Completa</title>
+    <title>RaniBet Liga 1 | Apuestas Reales</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        :root { --rani-green: #28a745; --dark: #121212; --surface: #ffffff; --border: #e0e0e0; }
+        :root { --rani-green: #28a745; --dark: #121212; --win: #2ecc71; --loss: #e74c3c; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f0f2f5; margin: 0; color: #333; }
+        body { background: #f0f2f5; margin: 0; padding-bottom: 30px; }
 
-        /* Navegación y Header */
-        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .logo { font-size: 24px; font-weight: 900; color: var(--dark); }
-        .user-panel { display: flex; align-items: center; gap: 12px; }
-        .balance-badge { background: #e8f5e9; color: var(--rani-green); padding: 8px 16px; border-radius: 20px; font-weight: 800; border: 1px solid #c8e6c9; }
+        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: 900; }
+        .balance-pill { background: #e8f5e9; color: var(--rani-green); padding: 8px 15px; border-radius: 20px; font-weight: 800; border: 1px solid #c8e6c9; }
 
-        /* Layout */
         .app-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 15px; }
         @media (min-width: 1024px) { .app-container { grid-template-columns: 240px 1fr 340px; } }
 
-        /* Filtros Rápidos */
-        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .filter-chip { background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; border: 1px solid var(--border); }
-        .filter-chip.active { background: var(--dark); color: white; border-color: var(--dark); }
+        /* Navegación Liga 1 */
+        .sidebar { background: white; border-radius: 12px; padding: 15px; border: 1px solid #ddd; height: fit-content; }
+        .league-item { padding: 10px; border-radius: 8px; background: #f8f9fa; margin-bottom: 10px; font-weight: bold; border-left: 4px solid var(--rani-green); }
 
-        /* Card de Partido Profesional */
-        .card { background: white; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; }
-        .card-header { padding: 10px 15px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: #777; }
-        .card-body { padding: 20px; text-align: center; }
-        .teams-row { font-size: 16px; font-weight: 700; margin-bottom: 15px; }
-        
-        .odds-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .odd-btn { background: #f8f9fa; border: 1px solid var(--border); padding: 12px 5px; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; }
+        /* Cards de Partidos */
+        .match-card { background: white; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; overflow: hidden; }
+        .match-header { padding: 8px 15px; background: #fdfdfd; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 11px; color: #888; }
+        .match-body { padding: 15px; text-align: center; }
+        .teams { font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+        .odds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .odd-btn { background: #f8f9fa; border: 1px solid #ddd; padding: 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
         .odd-btn:hover { border-color: var(--rani-green); background: #f1f8f1; }
         .odd-btn.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
-        .odd-label { display: block; font-size: 10px; opacity: 0.8; margin-bottom: 2px; }
-        .odd-value { font-weight: 800; font-size: 15px; }
 
-        /* Boleta Combinada */
-        .slip-card { background: white; border-radius: 12px; position: sticky; top: 90px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .slip-title { background: var(--dark); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; }
-        .selection-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; position: relative; }
-        .remove-sel { position: absolute; right: 10px; top: 10px; color: #ff4444; cursor: pointer; font-weight: bold; }
-        
-        .slip-footer { padding: 15px; background: #fcfcfc; }
-        .total-odds { display: flex; justify-content: space-between; font-weight: 800; font-size: 18px; margin-bottom: 15px; color: var(--rani-green); }
-        .bet-btn { width: 100%; padding: 16px; background: var(--rani-green); color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #1e7e34; }
-        .bet-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e7e34; }
+        /* Boleta y Tickets */
+        .slip-box { background: white; border-radius: 12px; border: 1px solid #ddd; position: sticky; top: 90px; overflow: hidden; }
+        .slip-header { background: var(--dark); color: white; padding: 12px; font-weight: bold; text-align: center; }
+        .ticket-item { padding: 12px; border-bottom: 1px solid #eee; position: relative; }
+        .status-won { color: var(--win); font-weight: bold; }
+        .status-open { color: #f39c12; font-weight: bold; }
 
-        /* Bono */
-        .promo-box { background: linear-gradient(45deg, #212529, #343a40); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .btn-bet { width: 100%; padding: 15px; background: var(--rani-green); color: white; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">🐸 RANI<span style="color:var(--rani-green)">BET</span></div>
-    <div class="user-panel">
-        <div id="auth-ui">
-            <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="onAuth"></div>
-            <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
-        </div>
-        <div id="user-ui" style="display:none; align-items:center; gap:12px;">
-            <div class="balance-badge">RC <span id="balance-txt">0</span></div>
-            <img id="user-img" src="" style="width:36px; height:36px; border-radius:50%;">
-            <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer;">✖</button>
+    <div id="user-area" style="display:flex; align-items:center; gap:12px;">
+        <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="onSignIn"></div>
+        <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
+        <div id="profile" style="display:none; align-items:center; gap:10px;">
+            <div class="balance-pill">RC <span id="coins">0</span></div>
+            <img id="u-photo" src="" style="width:35px; border-radius:50%;">
         </div>
     </div>
 </header>
 
 <div class="app-container">
-    <aside class="hidden-mobile">
-        <div class="promo-box">
-            <small>CÓDIGO PROMO</small>
-            <div style="display:flex; gap:5px; margin-top:8px;">
-                <input type="text" id="promo-code" placeholder="RANA100" style="width:70%; padding:5px; border-radius:4px; border:none;">
-                <button onclick="applyPromo()" style="background:var(--rani-green); border:none; color:white; border-radius:4px; cursor:pointer;">OK</button>
-            </div>
-        </div>
-        <nav>
-            <div class="filter-chip active">⚽ Fútbol</div>
-            <div class="filter-chip">🎮 eFootball</div>
-            <div class="filter-chip">🏀 Basket</div>
-        </nav>
+    <aside class="sidebar">
+        <div class="league-item">🇵🇪 Liga 1 Te Apuesto</div>
+        <div style="padding:10px; font-size:12px; color:#666;">Selecciona tus partidos favoritos y arma tu combinada.</div>
     </aside>
 
     <main>
-        <div class="filter-bar">
-            <div class="filter-chip active">Todo</div>
-            <div class="filter-chip">En Vivo</div>
-            <div class="filter-chip">Liga 1 🇵🇪</div>
-            <div class="filter-chip">Mañana</div>
-        </div>
-        <div id="matches-grid">Cargando mercados...</div>
+        <div id="matches">Cargando mercados de Liga 1...</div>
+        
+        <h3 style="margin-top:30px;">📋 Mis Tickets Ganados y Abiertos</h3>
+        <div id="history-list"></div>
     </main>
 
     <aside>
-        <div class="slip-card">
-            <div class="slip-title">
-                <span>BOLETA</span>
-                <span id="slip-count" style="background:var(--rani-green); padding:2px 8px; border-radius:10px; font-size:12px;">0</span>
-            </div>
-            <div id="slip-items" style="max-height:300px; overflow-y:auto;">
-                <p style="text-align:center; padding:30px; color:#999;">Selecciona cuotas para crear una combinada</p>
-            </div>
-            <div class="slip-footer" id="slip-footer" style="display:none;">
-                <div class="total-odds">
-                    <span>CUOTA TOTAL:</span>
-                    <span id="total-odd-val">0.00</span>
-                </div>
-                <input type="number" id="bet-stake" style="width:100%; padding:12px; border:2px solid #ddd; border-radius:8px; margin-bottom:15px; font-size:18px; font-weight:bold; text-align:center;" value="10">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
-                    <span>PAGO POTENCIAL:</span>
-                    <span style="color:var(--rani-green)">RC <span id="pot-payout">0.00</span></span>
-                </div>
-                <button class="bet-btn" onclick="processBet()">APOSTAR AHORA</button>
+        <div class="slip-box">
+            <div class="slip-header">BOLETA ACTUAL</div>
+            <div id="slip-content" style="padding:15px; text-align:center;">Selecciona un partido</div>
+            <div id="bet-actions" style="padding:15px; display:none; background:#fcfcfc;">
+                <div style="font-size:18px; font-weight:bold; margin-bottom:10px; color:var(--rani-green);">Cuota: <span id="total-odd">0.00</span></div>
+                <input type="number" id="stake" value="10" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ddd; margin-bottom:10px; text-align:center;">
+                <button class="btn-bet" onclick="placeBet()">PROCESAR TICKET</button>
             </div>
         </div>
     </aside>
@@ -123,129 +83,107 @@
 
 <script>
     let coins = parseInt(localStorage.getItem('rani_coins')) || 500;
-    let selections = [];
+    let tickets = JSON.parse(localStorage.getItem('rani_tickets')) || [];
+    let currentBets = [];
 
-    function updateBalance() {
-        document.getElementById('balance-txt').innerText = coins;
+    function update() {
+        document.getElementById('coins').innerText = coins;
         localStorage.setItem('rani_coins', coins);
+        localStorage.setItem('rani_tickets', JSON.stringify(tickets));
+        renderTickets();
     }
 
-    function onAuth(resp) {
+    function onSignIn(resp) {
         const u = JSON.parse(atob(resp.credential.split('.')[1]));
-        document.getElementById('auth-ui').style.display = 'none';
-        document.getElementById('user-ui').style.display = 'flex';
-        document.getElementById('user-img').src = u.picture;
-        updateBalance();
+        document.querySelector('.g_id_signin').style.display='none';
+        document.getElementById('profile').style.display='flex';
+        document.getElementById('u-photo').src = u.picture;
+        update();
     }
 
-    async function loadData() {
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-        const res = await fetch(url);
-        const csv = await res.text();
-        const rows = csv.split('\n').slice(2);
+    async function load() {
+        const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv");
+        const data = await res.text();
+        const rows = data.split('\n').slice(2);
         
-        document.getElementById('matches-grid').innerHTML = rows.map((r, i) => {
+        document.getElementById('matches').innerHTML = rows.map((r, i) => {
             const c = r.split(',');
             if(c.length < 7) return "";
             return `
-                <div class="card">
-                    <div class="card-header"><span>⚽ ${c[4]}</span> <span>${c[5]}</span></div>
-                    <div class="card-body">
-                        <div class="teams-row">${c[0]}</div>
-                        <div class="odds-row">
-                            <button class="odd-btn" onclick="addToSlip(this, '${c[0]}', 'Local', ${c[1]}, ${i})">
-                                <span class="odd-label">1</span> <span class="odd-value">${c[1]}</span>
-                            </button>
-                            <button class="odd-btn" onclick="addToSlip(this, '${c[0]}', 'Empate', ${c[2]}, ${i})">
-                                <span class="odd-label">X</span> <span class="odd-value">${c[2]}</span>
-                            </button>
-                            <button class="odd-btn" onclick="addToSlip(this, '${c[0]}', 'Visita', ${c[3]}, ${i})">
-                                <span class="odd-label">2</span> <span class="odd-value">${c[3]}</span>
-                            </button>
+                <div class="match-card">
+                    <div class="match-header"><span>🇵🇪 Liga 1</span> <span>${c[5]}</span></div>
+                    <div class="match-body">
+                        <div class="teams">${c[0]}</div>
+                        <div class="odds-grid">
+                            <button class="odd-btn" onclick="add(this,${i},'${c[0]}','Local',${c[1]})">L ${c[1]}</button>
+                            <button class="odd-btn" onclick="add(this,${i},'${c[0]}','Empate',${c[2]})">E ${c[2]}</button>
+                            <button class="odd-btn" onclick="add(this,${i},'${c[0]}','Visita',${c[3]})">V ${c[3]}</button>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }).join('');
     }
 
-    function addToSlip(btn, match, pick, odd, matchId) {
-        // Evitar duplicados del mismo partido
-        selections = selections.filter(s => s.matchId !== matchId);
+    function add(btn, id, match, pick, odd) {
+        currentBets = currentBets.filter(b => b.id !== id);
+        currentBets.push({id, match, pick, odd});
         
-        selections.push({ matchId, match, pick, odd });
-        updateSlipUI();
-        
-        // Efecto visual
         btn.parentElement.querySelectorAll('.odd-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
+
+        const totalOdd = currentBets.reduce((a, b) => a * b.odd, 1).toFixed(2);
+        document.getElementById('total-odd').innerText = totalOdd;
+        document.getElementById('slip-content').innerHTML = currentBets.map(b => `<div><b>${b.match}</b>: ${b.pick}</div>`).join('');
+        document.getElementById('bet-actions').style.display = 'block';
     }
 
-    function updateSlipUI() {
-        const container = document.getElementById('slip-items');
-        const footer = document.getElementById('slip-footer');
-        const count = document.getElementById('slip-count');
-        
-        count.innerText = selections.length;
-
-        if(selections.length === 0) {
-            container.innerHTML = '<p style="text-align:center; padding:30px; color:#999;">Selecciona cuotas</p>';
-            footer.style.display = 'none';
-            return;
-        }
-
-        footer.style.display = 'block';
-        container.innerHTML = selections.map((s, idx) => `
-            <div class="selection-item">
-                <span class="remove-sel" onclick="removeSel(${idx})">×</span>
-                <div style="font-weight:bold;">${s.match}</div>
-                <div style="color:var(--rani-green)">${s.pick} @ ${s.odd}</div>
-            </div>
-        `).join('');
-
-        const totalOdd = selections.reduce((acc, curr) => acc * curr.odd, 1).toFixed(2);
-        document.getElementById('total-odd-val').innerText = totalOdd;
-        calculatePayout();
-    }
-
-    function calculatePayout() {
-        const odd = parseFloat(document.getElementById('total-odd-val').innerText);
-        const stake = parseFloat(document.getElementById('bet-stake').value) || 0;
-        document.getElementById('pot-payout').innerText = (odd * stake).toFixed(2);
-    }
-
-    document.getElementById('bet-stake').addEventListener('input', calculatePayout);
-
-    function removeSel(idx) {
-        selections.splice(idx, 1);
-        updateSlipUI();
-    }
-
-    function processBet() {
-        const stake = parseFloat(document.getElementById('bet-stake').value);
-        if(stake > coins) return alert("Saldo insuficiente");
+    function placeBet() {
+        const stake = parseInt(document.getElementById('stake').value);
+        if(stake > coins) return alert("Rani Coins insuficientes");
         
         coins -= stake;
-        updateBalance();
-        alert("¡Ticket Procesado! Suerte con tu combinada 🐸");
-        selections = [];
-        updateSlipUI();
+        const ticket = {
+            num: 'TK-' + Math.floor(Math.random()*90000),
+            items: [...currentBets],
+            odd: parseFloat(document.getElementById('total-odd').innerText),
+            stake: stake,
+            status: 'Abierto',
+            date: new Date().toLocaleDateString()
+        };
+        
+        tickets.unshift(ticket);
+        currentBets = [];
+        document.getElementById('bet-actions').style.display = 'none';
+        document.getElementById('slip-content').innerText = "Selecciona un partido";
         document.querySelectorAll('.odd-btn').forEach(b => b.classList.remove('selected'));
+        
+        // Simular Ganancia (Función de Casa de Apuestas)
+        setTimeout(() => {
+            if(Math.random() > 0.6) {
+                ticket.status = 'Ganado';
+                coins += Math.round(ticket.stake * ticket.odd);
+                update();
+            }
+        }, 3000);
+        
+        update();
     }
 
-    function applyPromo() {
-        const code = document.getElementById('promo-code').value.toUpperCase();
-        if(code === 'RANA100' && !localStorage.getItem('promo_used')) {
-            coins += 100;
-            localStorage.setItem('promo_used', 'true');
-            updateBalance();
-            alert("Bono de 100 RC activado 🎁");
-        } else {
-            alert("Código inválido o ya usado");
-        }
+    function renderTickets() {
+        document.getElementById('history-list').innerHTML = tickets.map(t => `
+            <div class="match-card" style="padding:15px; font-size:13px; border-left: 5px solid ${t.status === 'Ganado' ? 'var(--win)' : '#ddd'}">
+                <div style="display:flex; justify-content:space-between;">
+                    <b>${t.num}</b> 
+                    <span class="${t.status === 'Ganado' ? 'status-won' : 'status-open'}">${t.status}</span>
+                </div>
+                <div style="margin:8px 0;">${t.items.map(i => i.match + " (" + i.pick + ")").join(' + ')}</div>
+                <div style="color:#666;">Apostado: ${t.stake} RC | Pago: <b>${(t.stake * t.odd).toFixed(2)} RC</b></div>
+            </div>
+        `).join('');
     }
 
-    loadData();
+    load();
+    update();
 </script>
 </body>
 </html>
