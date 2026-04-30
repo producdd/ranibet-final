@@ -1,289 +1,47 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RANI BET 🐸 | La Casa de la Liga 1</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;800&family=Orbitron:wght@700&display=swap"
-        rel="stylesheet">
+    <title>RaniBet - En Vivo</title>
     <style>
-        :root {
-            --o-green: #28a745;
-            --o-bg: #f4f7f6;
-            --o-text: #1a1a1a;
-        }
-
-        body {
-            background-color: var(--o-bg);
-            color: var(--o-text);
-            font-family: 'Barlow', sans-serif;
-        }
-
-        .font-orb {
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .bet-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-green {
-            background-color: var(--o-green);
-            color: white;
-            transition: background 0.2s;
-        }
-
-        .btn-green:hover {
-            background-color: #218838;
-        }
-
-        .odds-button {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .odds-button:hover {
-            border-color: var(--o-green);
-            background: #e6f4ea;
-        }
+        body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .grid { display: grid; gap: 15px; max-width: 500px; margin: auto; }
+        .card { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px solid #333; }
+        .vivo { border-color: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.2); }
+        .cuotas { display: flex; gap: 5px; margin: 10px 0; }
+        button { flex: 1; padding: 10px; background: #333; color: white; border: none; border-radius: 5px; }
     </style>
 </head>
+<body>
+    <h1 style="color: #00ff00;">🐸 RANI BET FIXTURE</h1>
+    <div id="partidos" class="grid">Cargando partidos reales...</div>
 
-<body class="min-h-screen pb-10">
-    <nav class="bg-white border-b-4 border-green-600 sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl">🐸</span>
-                <span class="font-orb text-2xl font-bold tracking-tighter text-gray-900">RANI<span
-                        class="text-green-600">BET</span></span>
-            </div>
-
-            <div id="auth-container">
-                <div id="user-info" class="hidden flex items-center gap-4">
-                    <div class="text-right">
-                        <p id="user-name" class="text-[10px] font-bold text-gray-400 uppercase">Usuario</p>
-                        <div class="flex items-center gap-1">
-                            <span id="balance-val" class="text-xl font-extrabold text-green-600">0.00</span>
-                            <span class="text-xs font-bold text-gray-400">RC</span>
-                        </div>
-                    </div>
-                    <img id="user-photo" src="" class="w-10 h-10 rounded-full border-2 border-green-500 shadow-sm">
-                </div>
-
-                <div id="google-login-btn">
-                    <div id="g_id_onload"
-                        data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com"
-                        data-callback="handleCredentialResponse" data-auto_prompt="false">
-                    </div>
-                    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline"
-                        data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="max-w-7xl mx-auto px-4 mt-6">
-        <div
-            class="bg-green-600 rounded-xl p-6 text-white flex justify-between items-center shadow-lg relative overflow-hidden">
-            <div class="z-10">
-                <h1 class="text-3xl font-extrabold italic">TU PRIMERO CODIGO VALE 100 RANI COINS !!!</h1>
-                <p class="text-green-100 mt-1">Usa el código <span
-                        class="bg-white text-green-700 px-2 py-0.5 rounded font-bold">RANA50</span></p>
-            </div>
-            <div class="text-8xl opacity-10 font-bold italic z-0">LIGA 1</div>
-        </div>
-    </div>
-
-    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <aside class="lg:col-span-2 space-y-6">
-            <div>
-                <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                    <span class="w-1 h-4 bg-green-600"></span> LIGAS
-                </h3>
-                <div class="bet-card overflow-hidden text-sm">
-                    <div class="p-3 hover:bg-green-50 border-l-4 border-green-600 bg-green-50 font-bold">🇵🇪 Liga 1
-                    </div>
-                    <div class="p-3 hover:bg-gray-50 border-b border-gray-100">🏆 Libertadores</div>
-                    <div class="p-3 hover:bg-gray-50">🇪🇸 La Liga</div>
-                </div>
-            </div>
-            <div class="bet-card p-4 border-t-4 border-yellow-500">
-                <input id="code-input" type="text" placeholder="CÓDIGO"
-                    class="w-full bg-gray-100 border rounded-lg p-2 mb-2 text-center font-bold outline-none focus:border-green-500">
-                <button onclick="canjearCodigo()"
-                    class="w-full btn-green font-bold py-2 rounded-lg text-xs shadow-md">CANJEAR</button>
-            </div>
-        </aside>
-
-        <section class="lg:col-span-7 space-y-8">
-            <div id="live-section" class="hidden">
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="relative flex h-3 w-3"><span
-                            class="animate-ping absolute h-full w-full rounded-full bg-red-400 opacity-75"></span><span
-                            class="relative rounded-full h-3 w-3 bg-red-600"></span></span>
-                    <h2 class="text-lg font-black uppercase italic">En Vivo</h2>
-                </div>
-                <div id="live-container" class="space-y-3"></div>
-            </div>
-
-            <div>
-                <div class="flex items-center gap-2 mb-6">
-                    <span class="text-2xl">⚽</span>
-                    <h2 class="text-xl font-black text-gray-800 uppercase">Próximos Partidos</h2>
-                </div>
-                <div id="fixture-container" class="space-y-3"></div>
-            </div>
-        </section>
-
-        <aside class="lg:col-span-3">
-            <div class="sticky top-20">
-                <div class="bg-[#1a1a1a] text-white p-3 rounded-t-lg font-bold flex justify-between items-center">
-                    <span>BOLETO DE APUESTA</span>
-                    <span id="bet-count" class="bg-green-600 text-[10px] px-2 py-0.5 rounded-full">0</span>
-                </div>
-                <div id="bet-slip"
-                    class="bet-card rounded-t-none p-4 min-h-[100px] flex flex-col justify-center items-center text-gray-400 border-2 border-dashed border-gray-200">
-                    <p id="empty-msg" class="text-center text-sm">Haz clic en una cuota para añadir tu apuesta</p>
-                    <div id="bet-details" class="hidden w-full space-y-4">
-                        <div class="border-b pb-2">
-                            <p id="bet-match" class="font-bold text-gray-800 text-sm"></p>
-                            <p id="bet-pick" class="text-green-600 font-bold text-xs"></p>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold">Monto (RC):</span>
-                            <input id="bet-amount" type="number" value="10"
-                                class="w-20 border rounded px-2 py-1 text-right font-bold outline-none focus:border-green-500">
-                        </div>
-                        <div class="bg-gray-50 p-2 rounded flex justify-between">
-                            <span class="text-xs">Ganancia Potencial:</span>
-                            <span id="pot-win" class="font-bold text-green-600 tracking-tighter">0.00</span>
-                        </div>
-                        <button onclick="realizarApuesta()"
-                            class="w-full btn-green py-3 rounded-lg font-black shadow-lg uppercase tracking-wider text-sm">Realizar
-                            Apuesta</button>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </main>
-    <aside class="space-y-6">
-        <div>
-            <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                <span class="w-1 h-4 bg-green-600"></span> COMPETENCIAS
-            </h3>
-            <div class="bet-card overflow-hidden">
-                <div
-                    class="p-3 hover:bg-green-50 flex items-center justify-between border-b border-gray-100 cursor-pointer bg-green-50 border-l-4 border-green-600">
-                    <span class="font-bold text-sm">🇵🇪 Liga 1 Perú</span>
-                    <span class="text-[10px] text-green-600">★</span>
-                </div>
-                <div
-                    class="p-3 hover:bg-gray-50 flex items-center justify-between border-b border-gray-100 cursor-pointer">
-                    <span class="text-sm">🇪🇸 La Liga</span>
-                </div>
-                <div class="p-3 hover:bg-gray-50 flex items-center justify-between cursor-pointer">
-                    <span class="text-sm">🇬🇧 Premier League</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="bet-card p-5 border-t-4 border-yellow-500">
-            <p class="text-xs font-bold text-gray-400 mb-2 uppercase text-center">Canjear Bono</p>
-            <input id="code-input" type="text" placeholder="EJ: RANA50"
-                class="w-full bg-gray-100 border border-gray-200 rounded-lg p-2.5 mb-3 text-center font-bold outline-none focus:border-green-500 transition">
-            <button onclick="canjearCodigo()"
-                class="w-full btn-green font-bold py-2.5 rounded-lg text-sm shadow-md">RECLAMAR RANI COINS</button>
-        </div>
-    </aside<div id="pantalla-principal" style="background:#0a0a0a; color:white; min-height:100vh; font-family:sans-serif; padding:20px;">
-    <h1 style="text-align:center; color:#00ff00;">🐸 RANI BET FIXTURE</h1>
-    <div id="contenedor-partidos" style="display:grid; gap:15px; max-width:600px; margin:auto;">
-        <p style="text-align:center;">Cargando partidos de hoy...</p>
-    </div>
-</div>
-
-<script>
-async function iniciarApp() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-    const container = document.getElementById("contenedor-partidos");
-    
-    try {
-        const res = await fetch(url);
-        const csv = await res.text();
-        const filas = csv.split("\n").slice(2);
-        
-        container.innerHTML = filas.map(f => {
-            const c = f.split(",");
-            if (c.length < 7) return "";
-            const enVivo = c[6].toUpperCase().includes("VIVO");
-            return `
-                <div style="background:#1a1a1a; padding:15px; border-radius:10px; border:1px solid ${enVivo ? 'red' : '#333'};">
-                    <div style="font-size:10px; color:#aaa;">${c[4]}</div>
-                    <div style="font-size:18px; margin:10px 0;"><b>${c[0]}</b></div>
-                    <div style="display:flex; gap:5px; justify-content:center;">
-                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">L: ${c[1]}</button>
-                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">E: ${c[2]}</button>
-                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">V: ${c[3]}</button>
-                    </div>
-                    <div style="margin-top:10px; text-align:right; font-weight:bold; color:${enVivo ? 'red' : '#00ff00'};">
-                        ${enVivo ? '🔴 EN VIVO' : c[5]}
-                    </div>
-                </div>`;
-        }).join("");
-    } catch (e) {
-        container.innerHTML = "Error al conectar con Google Sheets.";
-    }
-}
-window.onload = iniciarApp;
-</script>
-</body></html>
-<div id="pantalla-principal" style="background:#0a0a0a; color:white; min-height:100vh; font-family:sans-serif; padding:20px;">
-    <h1 style="text-align:center; color:#00ff00;">🐸 RANI BET FIXTURE</h1>
-    <div id="contenedor-partidos" style="display:grid; gap:15px; max-width:600px; margin:auto;">
-        <p style="text-align:center;">Cargando partidos de hoy...</p>
-    </div>
-</div>
-
-<script>
-async function iniciarApp() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-    const container = document.getElementById("contenedor-partidos");
-    
-    try {
-        const res = await fetch(url);
-        const csv = await res.text();
-        const filas = csv.split("\n").slice(2);
-        
-        container.innerHTML = filas.map(f => {
-            const c = f.split(",");
-            if (c.length < 7) return "";
-            const enVivo = c[6].toUpperCase().includes("VIVO");
-            return `
-                <div style="background:#1a1a1a; padding:15px; border-radius:10px; border:1px solid ${enVivo ? 'red' : '#333'};">
-                    <div style="font-size:10px; color:#aaa;">${c[4]}</div>
-                    <div style="font-size:18px; margin:10px 0;"><b>${c[0]}</b></div>
-                    <div style="display:flex; gap:5px; justify-content:center;">
-                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">L: ${c[1]}</button>
-                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">E: ${c[2]}</button>
-                        <button style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px;">V: ${c[3]}</button>
-                    </div>
-                    <div style="margin-top:10px; text-align:right; font-weight:bold; color:${enVivo ? 'red' : '#00ff00'};">
-                        ${enVivo ? '🔴 EN VIVO' : c[5]}
-                    </div>
-                </div>`;
-        }).join("");
-    } catch (e) {
-        container.innerHTML = "Error al conectar con Google Sheets.";
-    }
-}
-window.onload = iniciarApp;
-</script>
-</body></html>
+    <script>
+        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
+        async function cargar() {
+            try {
+                const res = await fetch(url);
+                const csv = await res.text();
+                const filas = csv.split("\n").slice(2);
+                document.getElementById("partidos").innerHTML = filas.map(f => {
+                    const c = f.split(",");
+                    if (c.length < 7) return "";
+                    const enVivo = c[6].toUpperCase().includes("VIVO");
+                    return `
+                        <div class="card ${enVivo ? 'vivo' : ''}">
+                            <div style="font-size: 10px; color: #888;">${c[4]}</div>
+                            <div style="font-size: 18px; margin: 5px 0;"><b>${c[0]}</b></div>
+                            <div class="cuotas">
+                                <button>L ${c[1]}</button><button>E ${c[2]}</button><button>V ${c[3]}</button>
+                            </div>
+                            <div style="color: ${enVivo ? 'red' : '#00ff00'}; font-weight: bold;">
+                                ${enVivo ? '🔴 EN VIVO' : c[5]}
+                            </div>
+                        </div>`;
+                }).join("");
+            } catch (e) { document.getElementById("partidos").innerHTML = "Error de conexión"; }
+        }
+        cargar();
+    </script>
+</body>
+</html>
