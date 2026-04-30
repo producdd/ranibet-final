@@ -3,166 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RaniBet | Privacidad de Tickets</title>
+    <title>RaniBet Pro | Casa de Apuestas</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        :root { --rani-green: #28a745; --bg: #f4f7f6; }
-        * { box-sizing: border-box; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+        :root { --rani-green: #28a745; --dark: #1a1a1a; --gray: #f4f7f6; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--gray); margin: 0; color: #333; }
         
-        header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; }
-        .user-panel { display: flex; align-items: center; gap: 10px; }
-        .balance { background: #e8f5e9; color: var(--rani-green); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; }
+        /* Header Profesional */
+        header { background: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--rani-green); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: -1px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .balance-pill { background: #e8f5e9; color: var(--rani-green); padding: 6px 15px; border-radius: 50px; font-weight: bold; font-size: 14px; border: 1px solid #c8e6c9; }
 
-        .main-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 15px auto; padding: 0 10px; }
-        @media (min-width: 1024px) { .main-container { grid-template-columns: 1fr 350px; } }
+        /* Contenedor Principal */
+        .container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1300px; margin: 15px auto; padding: 0 15px; }
+        @media (min-width: 1024px) { .container { grid-template-columns: 250px 1fr 320px; } }
 
-        .match-card { background: white; border-radius: 10px; padding: 15px; border: 1px solid #eee; margin-bottom: 15px; }
-        .odds { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-odd { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #fff; }
-        .btn-odd.selected { background: var(--rani-green); color: white; border-color: var(--rani-green); }
+        /* Filtros Lateral */
+        .sidebar { display: none; }
+        @media (min-width: 1024px) { .sidebar { display: block; } }
+        .nav-item { padding: 12px; background: white; margin-bottom: 5px; border-radius: 8px; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
+        .nav-item:hover { background: #eee; border-left-color: var(--rani-green); }
 
-        .section-box { background: white; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px; overflow: hidden; }
-        .box-header { background: #212529; color: white; padding: 10px; font-weight: bold; text-align: center; }
-        .history-item { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+        /* Tarjetas de Partido Mejoradas */
+        .match-card { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .match-info { padding: 12px; background: #f8f9fa; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 12px; color: #666; }
+        .match-teams { padding: 15px; font-weight: bold; font-size: 16px; text-align: center; }
+        .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; }
+        .odd-box { background: #f1f3f5; border: 1px solid #dee2e6; padding: 10px 5px; border-radius: 6px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .odd-box:hover { border-color: var(--rani-green); background: #e8f5e9; }
+        .odd-box.active { background: var(--rani-green); color: white; border-color: var(--rani-green); }
+        .odd-val { display: block; font-weight: bold; font-size: 14px; margin-top: 2px; }
 
-        #modal-ticket { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .ticket-virtual { background: white; width: 90%; max-width: 320px; padding: 20px; border-radius: 15px; text-align: center; border: 2px dashed #ccc; }
+        /* Boleta de Apuestas */
+        .bet-slip { background: white; border-radius: 12px; position: sticky; top: 80px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .slip-header { background: var(--dark); color: white; padding: 12px; border-radius: 12px 12px 0 0; text-align: center; font-weight: bold; }
+        .slip-content { padding: 15px; min-height: 100px; }
+        .bet-input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 18px; font-weight: bold; text-align: center; margin-top: 10px; }
+
+        /* Historial y Estados */
+        .status-badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: bold; }
+        .status-open { background: #fff3cd; color: #856404; }
+        .status-won { background: #d4edda; color: #155724; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight:bold;">🐸 RANI<span style="color:var(--rani-green)">BET</span></div>
-    <div class="user-panel">
-        <div id="balance-ui" class="balance" style="display:none;"><span id="coins-val"></span> RC</div>
-        <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="onSignIn"></div>
-        <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
-        <div id="profile-area" style="display:none; align-items:center;">
-            <img id="u-img" src="" style="width:30px; border-radius:50%; margin-right:5px;">
-            <button class="logout-btn" onclick="logout()">Salir</button>
+    <div class="logo">🐸 RANI<span style="color:var(--rani-green)">BET</span></div>
+    <div class="user-info">
+        <div id="logged-in-ui" style="display:none; align-items:center; gap:10px;">
+            <div class="balance-pill"><span id="balance-val">0</span> RC</div>
+            <img id="user-photo" src="" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--rani-green);">
+            <button onclick="logout()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size:12px;">Salir</button>
         </div>
+        <div id="g_id_onload" data-client_id="6300462154-9uoaapb6jcbbe6semt477k2adv6s8f1p.apps.googleusercontent.com" data-callback="handleAuth"></div>
+        <div class="g_id_signin" data-type="standard"></div>
     </div>
 </header>
 
-<div class="main-container">
+<div class="container">
+    <!-- Lateral: Ligas -->
+    <aside class="sidebar">
+        <h3 style="padding-left:10px;">🏆 Ligas Populares</h3>
+        <div class="nav-item">🇵🇪 Liga 1 Perú</div>
+        <div class="nav-item">🇪🇺 Champions League</div>
+        <div class="nav-item">🏆 Copa Libertadores</div>
+        <div class="nav-item">🇪🇸 La Liga</div>
+    </aside>
+
+    <!-- Centro: Partidos -->
     <main>
-        <div id="partidos-list"></div>
+        <div id="match-list">Cargando mercados...</div>
         
-        <!-- Sección de Historial: Oculta por defecto -->
-        <div class="section-box" id="historial-container" style="display:none;">
-            <div class="box-header">📋 MIS TICKETS (HISTORIAL)</div>
-            <div id="historial-lista"></div>
+        <div id="history-section" style="display:none; margin-top:30px;">
+            <h3 style="margin-left:10px;">📋 Mis Apuestas Recientes</h3>
+            <div id="history-list"></div>
         </div>
     </main>
 
+    <!-- Derecha: Boleta -->
     <aside>
-        <div class="section-box">
-            <div class="box-header">BOLETO ACTUAL</div>
-            <div id="boleta-detalle" style="padding:20px; text-align:center; font-size:14px; color:#666;">Selecciona una cuota</div>
-            <div id="apuesta-form" style="padding:15px; border-top:1px solid #eee; display:none;">
-                <input type="number" id="monto-rc" value="10" style="width:100%; padding:10px; margin-bottom:10px;">
-                <button onclick="realizarApuesta()" style="background:var(--rani-green); color:white; border:none; width:100%; padding:15px; border-radius:8px; font-weight:bold; cursor:pointer;">CONFIRMAR APUESTA</button>
+        <div class="bet-slip">
+            <div class="slip-header">BOLETA DE APUESTA</div>
+            <div id="slip-empty" style="padding:40px; text-align:center; color:#999;">
+                Selecciona una cuota para apostar
+            </div>
+            <div id="slip-active" style="display:none; padding:15px;">
+                <div id="bet-details" style="font-size:14px; line-height:1.5;"></div>
+                <input type="number" id="bet-amount" class="bet-input" value="10">
+                <div style="display:flex; justify-content:space-between; margin:15px 0; font-weight:bold;">
+                    <span>Ganancia:</span>
+                    <span style="color:var(--rani-green)">RC <span id="potential-win">0.00</span></span>
+                </div>
+                <button onclick="placeBet()" style="width:100%; padding:15px; background:var(--rani-green); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">APOSTAR AHORA</button>
             </div>
         </div>
     </aside>
 </div>
 
-<div id="modal-ticket">
-    <div class="ticket-virtual">
-        <h3 style="color:var(--rani-green);">✅ TICKET DE APUESTA</h3>
-        <hr><div id="ticket-info" style="text-align:left; font-size:14px;"></div><hr>
-        <button onclick="cerrarTicket()" style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:5px;">CERRAR</button>
-    </div>
-</div>
-
 <script>
-    let coins = localStorage.getItem('rani_coins') ? parseInt(localStorage.getItem('rani_coins')) : 500;
-    let historial = JSON.parse(localStorage.getItem('rani_historial')) || [];
-    let seleccion = null;
+    let raniCoins = parseInt(localStorage.getItem('rani_coins')) || 500;
+    let betHistory = JSON.parse(localStorage.getItem('rani_history')) || [];
+    let currentSelection = null;
 
-    function actualizarBalance() {
-        document.getElementById("coins-val").innerText = coins;
-        localStorage.setItem('rani_coins', coins);
+    // Sincronizar Balance
+    function updateUI() {
+        document.getElementById('balance-val').innerText = raniCoins;
+        localStorage.setItem('rani_coins', raniCoins);
+        renderHistory();
     }
 
-    function onSignIn(response) {
+    // Auth Google
+    function handleAuth(response) {
         const user = JSON.parse(atob(response.credential.split('.')[1]));
-        document.querySelector(".g_id_signin").style.display = "none";
-        document.getElementById("balance-ui").style.display = "block";
-        document.getElementById("profile-area").style.display = "flex";
-        document.getElementById("u-img").src = user.picture;
-        
-        // MOSTRAR HISTORIAL AL LOGUEARSE
-        document.getElementById("historial-container").style.display = "block";
-        
-        actualizarBalance();
-        renderHistorial();
+        document.querySelector('.g_id_signin').style.display = 'none';
+        document.getElementById('logged-in-ui').style.display = 'flex';
+        document.getElementById('history-section').style.display = 'block';
+        document.getElementById('user-photo').src = user.picture;
+        updateUI();
     }
 
     function logout() {
         google.accounts.id.disableAutoSelect();
-        // OCULTAR HISTORIAL AL SALIR
-        document.getElementById("historial-container").style.display = "none";
         location.reload();
     }
 
-    async function loadMatches() {
-        const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
-        const res = await fetch(url);
-        const data = await res.text();
-        const filas = data.split("\n").slice(2);
-        document.getElementById("partidos-list").innerHTML = filas.map(f => {
-            const c = f.split(",");
-            if(c.length < 7) return "";
-            return `<div class="match-card">
-                <div style="font-size:11px; color:#888;">${c[4]} | ${c[5]}</div>
-                <div style="font-weight:bold; margin:10px 0;">${c[0]}</div>
-                <div class="odds">
-                    <button class="btn-odd" onclick="pick(this,'${c[0]}','L',${c[1]})">L<br>${c[1]}</button>
-                    <button class="btn-odd" onclick="pick(this,'${c[0]}','E',${c[2]})">E<br>${c[2]}</button>
-                    <button class="btn-odd" onclick="pick(this,'${c[0]}','V',${c[3]})">V<br>${c[3]}</button>
+    // Cargar Datos desde Google Sheets (Tu CSV)
+    async function fetchMatches() {
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTrSV31J-OEkp58qUQJUYGpu0mjISCNF4-Zelw1705EcISzAlccksrhi_nKu2FagnruaZqrd-dzAbGk/pub?output=csv";
+        const res = await fetch(CSV_URL);
+        const text = await res.text();
+        const rows = text.split('\n').slice(2); // Omitir cabeceras
+
+        document.getElementById('match-list').innerHTML = rows.map(row => {
+            const cols = row.split(',');
+            if(cols.length < 7) return "";
+            return `
+                <div class="match-card">
+                    <div class="match-info">
+                        <span>⚽ ${cols[4]}</span>
+                        <span>${cols[5]}</span>
+                    </div>
+                    <div class="match-teams">${cols[0]}</div>
+                    <div class="market-grid">
+                        <div class="odd-box" onclick="selectOdd(this, '${cols[0]}', 'Local', ${cols[1]})">
+                            <small>Local</small><span class="odd-val">${cols[1]}</span>
+                        </div>
+                        <div class="odd-box" onclick="selectOdd(this, '${cols[0]}', 'Empate', ${cols[2]})">
+                            <small>Empate</small><span class="odd-val">${cols[2]}</span>
+                        </div>
+                        <div class="odd-box" onclick="selectOdd(this, '${cols[0]}', 'Visita', ${cols[3]})">
+                            <small>Visita</small><span class="odd-val">${cols[3]}</span>
+                        </div>
+                    </div>
                 </div>
-            </div>`;
-        }).join("");
+            `;
+        }).join('');
     }
 
-    function pick(btn, partido, opcion, cuota) {
-        document.querySelectorAll('.btn-odd').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        seleccion = { partido, opcion, cuota };
-        document.getElementById("boleta-detalle").innerHTML = `<b>${partido}</b><br>${opcion} @ ${cuota}`;
-        document.getElementById("apuesta-form").style.display = "block";
+    // Selección de Apuesta
+    function selectOdd(element, match, pick, odd) {
+        document.querySelectorAll('.odd-box').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        
+        currentSelection = { match, pick, odd };
+        document.getElementById('slip-empty').style.display = 'none';
+        document.getElementById('slip-active').style.display = 'block';
+        document.getElementById('bet-details').innerHTML = `<strong>${match}</strong><br>Mercado: Ganador del Partido<br>Selección: <b>${pick}</b> @ ${odd}`;
+        calcWin();
     }
 
-    function realizarApuesta() {
-        const monto = parseInt(document.getElementById("monto-rc").value);
-        if(monto > coins) return alert("Rani Coins insuficientes");
-        coins -= monto;
-        actualizarBalance();
-        const ticket = { partido: seleccion.partido, opcion: seleccion.opcion, cuota: seleccion.cuota, monto, fecha: new Date().toLocaleString() };
-        historial.unshift(ticket);
-        localStorage.setItem('rani_historial', JSON.stringify(historial));
-        mostrarTicket(ticket);
-        renderHistorial();
+    function calcWin() {
+        const amt = document.getElementById('bet-amount').value;
+        document.getElementById('potential-win').innerText = (amt * currentSelection.odd).toFixed(2);
+    }
+    document.getElementById('bet-amount').addEventListener('input', calcWin);
+
+    // Procesar Apuesta
+    function placeBet() {
+        const amount = parseInt(document.getElementById('bet-amount').value);
+        if(amount > raniCoins) return alert("Saldo insuficiente de Rani Coins");
+        if(amount <= 0) return alert("Monto no válido");
+
+        raniCoins -= amount;
+        const newBet = {
+            id: 'TK-' + Math.floor(Math.random()*9000 + 1000),
+            match: currentSelection.match,
+            pick: currentSelection.pick,
+            odd: currentSelection.odd,
+            stake: amount,
+            status: 'Abierto',
+            date: new Date().toLocaleTimeString()
+        };
+
+        betHistory.unshift(newBet);
+        localStorage.setItem('rani_history', JSON.stringify(betHistory));
+        
+        alert("¡Apuesta aceptada! Suerte, Roberto.");
+        updateUI();
+        resetSlip();
     }
 
-    function mostrarTicket(t) {
-        document.getElementById("ticket-info").innerHTML = `<b>Evento:</b> ${t.partido}<br><b>Cuota:</b> ${t.cuota}<br><b>Apostado:</b> ${t.monto} RC`;
-        document.getElementById("modal-ticket").style.display = "flex";
+    function renderHistory() {
+        document.getElementById('history-list').innerHTML = betHistory.map(b => `
+            <div style="background:white; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #333; font-size:13px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <b>${b.id}</b> <span class="status-badge status-open">${b.status}</span>
+                </div>
+                <div>${b.match} - <b>${b.pick}</b> (@${b.odd})</div>
+                <div style="color:#666; margin-top:5px;">Apostado: ${b.stake} RC | Ganancia: ${(b.stake * b.odd).toFixed(2)} RC</div>
+            </div>
+        `).join('');
     }
 
-    function renderHistorial() {
-        document.getElementById("historial-lista").innerHTML = historial.length === 0 ? '<p style="padding:20px; color:#999; text-align:center;">Sin apuestas</p>' : historial.map(h => `
-            <div class="history-item"><b>${h.partido}</b><br>${h.opcion} @ ${h.cuota} | ${h.monto} RC</div>
-        `).join("");
+    function resetSlip() {
+        document.getElementById('slip-active').style.display = 'none';
+        document.getElementById('slip-empty').style.display = 'block';
+        document.querySelectorAll('.odd-box').forEach(el => el.classList.remove('active'));
     }
 
-    function cerrarTicket() { document.getElementById("modal-ticket").style.display = "none"; }
-
-    actualizarBalance();
-    loadMatches();
+    fetchMatches();
+    updateUI();
 </script>
 </body>
 </html>
